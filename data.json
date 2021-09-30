@@ -1,0 +1,22 @@
+{
+    "data": {
+        "fast-food": {
+            "lavash": {
+                "price": 12000,
+                "image": "https://i.ytimg.com/vi/TTnIPBOnpWk/maxresdefault.jpg"
+            },
+            "hamburger": {
+                "price": 12000,
+                "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/1200px-RedDot_Burger.jpg"
+            },
+            "chizburger": {
+                "price": 12000,
+                "image": "https://i.ytimg.com/vi/TTnIPBOnpWk/maxresdefault.jpg"
+            },
+            "potato-fri": {
+                "price": 12000,
+                "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/RedDot_Burger.jpg/1200px-RedDot_Burger.jpg"
+            }
+        }
+    }
+}

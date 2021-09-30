@@ -1,0 +1,9 @@
+
+.sidebar{
+    width: 114px;
+    overflow: auto;
+}
+::-webkit-scrollbar {
+    width: 2px;
+  }
+  
