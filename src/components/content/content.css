@@ -7,13 +7,15 @@
     margin-bottom: 5px;
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
-    height: 70px;
+    height: 90px;
     width: 250px;
     align-items: center;
 }
 
 .mywrapper{
+    overflow:auto;
     margin: 0, 30px;
     display: flex;
     flex-direction: column;
@@ -42,6 +44,7 @@ font-size: 18px;
     color:#1948F0;
 }
 .quality{
+    width: 30px;
     margin-top: auto;
     margin-left: 5px;
     color: black;
