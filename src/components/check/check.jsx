@@ -96,12 +96,12 @@ function Check() {
     hidden: { opacity: 0 },
     show: { opacity: 1 },
   };
-  const height = window.innerHeight - 20 + "px";
+  const height = window.innerHeight - 105 + "px";
 
   //Taking date
   let newDate = new Date();
   let month = newDate.getMonth() + 1;
-  let date = newDate.getDate() + "/" + month + "/" + newDate.getFullYear();
+  let date = newDate.getDate() + "/" + 1 + "/" + newDate.getFullYear();
   return (
     <motion.div
       initial={{ x: 160 }}

@@ -10,6 +10,8 @@ import placeholder from "./placeholder.png";
 import "./content.css";
 import { useCart } from "react-use-cart";
 import CurrencyFormat from "react-currency-format";
+import { Image } from "antd";
+
 // import FormControlLabel from "@material-ui/core/FormControlLabel";
 // import Radio from "@material-ui/core/Radio";
 // import RadioGroup from "@material-ui/core/RadioGroup";
@@ -26,10 +28,6 @@ function Content({ data, loading }) {
 
   const addCart = (obj) => {
     addItem(obj);
-    setTimeout(() => {
-      setQuality("1");
-      setPrice("obj.price");
-    }, 1);
   };
 
   const handleChange = (e, quality) => {
@@ -64,19 +62,17 @@ function Content({ data, loading }) {
                 data[key].map(({ _id: id, ...obj }) => (
                   <div>
                     <motion.div key={obj.id} className="products">
-                      <img
-                        style={{
-                          width: "77px",
-                          height: "55PX",
-                          borderRadius: "15px",
-                        }}
+                      <Image
+                        style={{ borderRadius: "15px" }}
+                        width={77}
+                        height={55}
                         src={
-                          obj.productImage
+                          obj.productImage === null
                             ? "http://localhost:4000/" + obj.productImage
                             : placeholder
                         }
-                        alt="No "
                       />
+
                       <div>
                         <p className="firstName">{obj.name}</p>
                         <CurrencyFormat

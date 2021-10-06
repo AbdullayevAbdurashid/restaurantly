@@ -46,7 +46,7 @@ function App() {
     <div className="App">
       <CartProvider>
         <Overall />
-        <Grid container spacing={1}>
+        {/* <Grid container spacing={1}>
           <Grid item xs={12} lg={12} sm={12}>
             <Search loading={loading} data={data} />
           </Grid>
@@ -56,7 +56,7 @@ function App() {
           <Grid item xs={12} sm={12}>
             <Check />
           </Grid>
-        </Grid>
+        </Grid> */}
       </CartProvider>
     </div>
   );

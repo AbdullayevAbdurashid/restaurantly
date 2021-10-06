@@ -67,6 +67,35 @@
   transition: 0.1s;
 }
 .cheklist {
-  width: 400px;
-  margin: 0 auto;
+  width: 500px;
+  margin: 70px auto;
+}
+.filterButton {
+  border: none;
+  color: white;
+  background: linear-gradient(94.21deg, #60df40 -4.66%, #0dc3ce 93.91%);
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+.errorInput {
+  animation-name: shake;
+  animation-duration: 0.7s, 0.35s;
+  animation-iteration-count: 1, 2;
+}
+@keyframes shake {
+  0%,
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(8px);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-8px);
+  }
 }
