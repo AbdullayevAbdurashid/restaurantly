@@ -6,16 +6,13 @@ import { motion } from "framer-motion";
 import SearchIcon from "@material-ui/icons/Search";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { useCart } from "react-use-cart";
-import placeholder from "../content/placeholder.png";
 import Skeleton from "@material-ui/lab/Skeleton";
 
 function Search({ data, loading }) {
-  const [pricer, setPrice] = React.useState("obj.price");
 
   const [anim, setAnim] = React.useState();
   const [isSearch, setSearch] = React.useState(false);
   const { addItem } = useCart();
-  const [quality, setQuality] = React.useState("1.5");
   const [alldata, setAlldata] = React.useState(dataSet(data));
 
   React.useEffect(() => {
@@ -27,6 +24,8 @@ function Search({ data, loading }) {
       return Object.values(obj).reduce((arr, el) => [...arr, ...el]);
     }
   }
+
+
   const animSet = () => {
     if (isSearch === true) {
       setAnim(-200);
@@ -38,10 +37,6 @@ function Search({ data, loading }) {
   };
   const addCart = (obj) => {
     addItem(obj);
-    setTimeout(() => {
-      setQuality("1");
-      setPrice("obj.price");
-    }, 1);
   };
 
   const { getRootProps, getInputProps, getListboxProps, groupedOptions } =
@@ -100,8 +95,15 @@ function Search({ data, loading }) {
             >
               {groupedOptions.map((obj, index) => (
                 <div className="searchOne" {...getListboxProps()}>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <p className="firstName">{obj.name}</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      flexWrap: "no-wrap",
+                      width: "90% ",
+                    }}
+                  >
+                    <p className="firstNames">{obj.name}</p>
 
                     <CurrencyFormat
                       value={obj.price}
@@ -114,61 +116,17 @@ function Search({ data, loading }) {
                     />
                   </div>
 
-                  <div
-                    style={{
-                      marginTop: "-10px",
-                      width: "50px",
-                      display: "flex",
-                      flexDirection: "row",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <motion.button
-                      className="quality"
-                      whileTap={{ scale: 1.1 }}
-                      onClick={() => {
-                        setQuality("1");
-                        setPrice("obj.price");
-                      }}
-                    >
-                      1
-                    </motion.button>
-                    <motion.button
-                      className="quality"
-                      whileTap={{ scale: 1.1 }}
-                      onClick={() => {
-                        setQuality("0.5");
-                        setPrice("obj.price05");
-                      }}
-                    >
-                      0.5
-                    </motion.button>
-                    <motion.button
-                      className="quality"
-                      whileTap={{ scale: 1.1 }}
-                      onClick={() => {
-                        setQuality("0.7");
-                        setPrice("obj.price07");
-                      }}
-                    >
-                      0.7
-                    </motion.button>
-                  </div>
 
-                  <div style={{ marginLeft: "auto" }}>
-                    <img src={placeholder} alt="x" />
-                  </div>
-                  <div style={{ marginTop: "auto", marginBottom: "-10px" }}>
+                  <div style={{ marginTop: "auto", marginBottom: "-10px", marginLeft: "auto", display: "flex" }}>
                     <motion.button
                       whileTap={{ scale: 1.1 }}
                       className="button_plus"
                       onClick={() => {
-                        let price = eval(pricer);
+
                         let tempObj = {
-                          id: obj._id + "quality" + quality,
-                          quality: quality,
-                          name: obj.name + " " + quality,
-                          price: price,
+                          id: obj._id + "qual1",
+                          name: obj.name + " 1",
+                          price: obj.price,
                         };
                         addCart(tempObj);
                       }}
@@ -181,8 +139,9 @@ function Search({ data, loading }) {
             </motion.div>
           ) : null}
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }
 

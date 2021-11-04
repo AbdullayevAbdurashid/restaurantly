@@ -7,41 +7,28 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import CurrencyFormat from "react-currency-format";
 import AddIcon from "@material-ui/icons/Add";
-import { Drawer, Button } from "antd";
-import ArrowBackIosOutlinedIcon from "@material-ui/icons/ArrowBackIosOutlined";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Modal, Space } from "antd";
+import { Modal } from "antd";
+import Container from "@material-ui/core/Container";
 
+const socket = io("http://localhost:4000");
 function Check() {
-  //connecting to socket
-  const socket = io("http://localhost:4000");
-
-  //Importing cart
   const {
     isEmpty,
     cartTotal,
     items,
     updateItemQuantity,
     emptyCart,
-    totalItems,
   } = useCart();
 
   //Refs and states
   const [anim, setAnim] = useState(0);
   const [input, setInput] = useState(0);
-  const [visible, setVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
-  };
-  const showDrawer = () => {
-    setVisible(true);
-  };
-
-  const onClose = () => {
-    setVisible(false);
   };
   //Sending data to server to orders page
   const setPosst = () => {
@@ -49,6 +36,7 @@ function Check() {
       table: input,
       money: cartTotal,
       foods: items,
+      time: new Date().getHours() + ":" + new Date().getMinutes()
     });
   };
   //Sending data to server to stats page
@@ -56,14 +44,13 @@ function Check() {
   const setPost = () => {
     axios({
       method: "post",
-      url: "http://localhost:4000/status",
+      url: "http://192.168.43.2:4000/status",
       data: {
         date: date,
         money: cartTotal,
       },
     });
   };
-
   //Tracking click of end order vutton
   const handleCLicker = () => {
     if (isEmpty === false) {
@@ -74,7 +61,6 @@ function Check() {
           setPost();
           emptyCart(); // runs first
           setAnim(0); // runs second
-          setInput(0);
           setIsModalVisible(false);
         }, 1000);
       } else if (input === 0) {
@@ -96,37 +82,36 @@ function Check() {
     hidden: { opacity: 0 },
     show: { opacity: 1 },
   };
-  const height = window.innerHeight - 105 + "px";
+  const height = window.innerHeight - 255 + "px";
 
   //Taking date
   let newDate = new Date();
   let month = newDate.getMonth() + 1;
-  let date = newDate.getDate() + "/" + 1 + "/" + newDate.getFullYear();
+  let date = newDate.getDate() + "/" + month + "/" + newDate.getFullYear();
   return (
-    <motion.div
-      initial={{ x: 160 }}
-      animate={{ x: 0 }}
-      transition={{ type: "tween", stiffness: 50, duration: 0.5 }}
-      style={{ marginTop: "20px" }}
-    >
-      <Button
-        onClick={showDrawer}
-        style={{ position: "absolute", top: "50%", right: "0" }}
-        type="default"
-        icon={<ArrowBackIosOutlinedIcon />}
-      >
-        <h4 style={{ color: "#1948f0" }}>{totalItems} items</h4>
-      </Button>
-      <Drawer
-        width={400}
-        title="Check"
-        placement="right"
-        onClose={onClose}
-        visible={visible}
+    <Container>
+
+      <motion.div
+        initial={{ x: 360 }}
+        animate={{ x: 0 }}
+        transition={{ type: "tween", stiffness: 50, duration: 0.5 }}
+        style={{ marginTop: "7px" }}
       >
         <motion.div className="mywrapperr" style={{ height: height }}>
           <div style={{ display: "flex" }}>
-            <p style={{ fontSize: "24px", marginBottom: "0px" }}> Products </p>
+
+            <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Tanlangan taomlar</p>
+            <div style={{
+              display: "flex", flexDirection: "column",
+              width: "80px",
+              height: "30px",
+              marginLeft: "auto",
+              marginTop: "auto",
+              marginBottom: "5px",
+            }}>
+
+
+            </div>
             <motion.div
               onClick={() => cartEmpty()}
               whileTap={{ scale: 1.1 }}
@@ -143,8 +128,8 @@ function Check() {
                 style={{
                   color: "#d60505",
                   fontSize: "14px",
-                  width: "80px",
-                  height: "30px",
+                  width: "100px",
+                  height: "40px",
                   marginLeft: "auto",
                   marginBottom: "0px",
                 }}
@@ -154,7 +139,7 @@ function Check() {
 
           <Divider style={{ background: "blue" }} />
 
-          <div className="main">
+          <div className="main" style={{ height: height }}>
             {items.map((item) => (
               <div key={item.id} className="itemMain">
                 <motion.div
@@ -206,21 +191,26 @@ function Check() {
           {/* Button stuff */}
           <div className="table">
             <p
-              style={{ margin: "auto", fontSize: "24px", paddingRight: "30px" }}
+              style={{
+                margin: "auto",
+                fontSize: "22px",
+                paddingRight: "30px",
+              }}
             >
-              {" "}
+
               Stol raqami{" "}
             </p>
+
             <input
               type="number"
               min="0"
               max="100"
               value={input}
               style={{
-                width: "55px",
-                height: "25px",
+                width: "75px",
+                height: "35px",
                 margin: "auto",
-                fontSize: "24px",
+                fontSize: "20px",
                 borderRadius: "5px",
                 boxShadow: " 2px 2px 5px 4px rgba(0, 0, 0, 0.25)",
                 border: 0,
@@ -230,21 +220,26 @@ function Check() {
             <br />
           </div>
           <div className="p">
-            <h3 style={{ color: "black", fontSize: "20px" }}>
-              {" "}
-              Jami:
-              <CurrencyFormat
-                value={cartTotal}
-                displayType={"text"}
-                suffix=" sum"
-                thousandSeparator={true}
-                renderText={(value) => (
-                  <span style={{ color: "#187CDF", fontSize: "24px" }}>
-                    {value}
-                  </span>
-                )}
-              />
-            </h3>
+            <div className='p'>
+              <h3 style={{
+                color: "black", fontSize: "24px", margin: "auto",
+              }}>
+                {" "}
+                Jami:
+                <CurrencyFormat
+                  value={cartTotal}
+                  displayType={"text"}
+                  suffix=" sum"
+                  thousandSeparator={true}
+                  renderText={(value) => (
+                    <span style={{ color: "#187CDF", fontSize: "22px" }}>
+                      {value}
+                    </span>
+                  )}
+                />
+              </h3>
+            </div>
+
             <motion.button
               whileTap={{ scale: 1.1 }}
               className="pl"
@@ -254,19 +249,20 @@ function Check() {
             </motion.button>
           </div>
         </motion.div>
-      </Drawer>
-      <Modal
-        title="Сonfirm"
-        onOk={handleCLicker}
-        onCancel={() => setIsModalVisible(false)}
-        okText="Yes"
-        cancelText="No"
-        visible={isModalVisible}
-        height={100}
-      >
-        <p>Do you confirm?</p>
-      </Modal>
-    </motion.div>
+        <Modal
+          title="Tasdiqlash"
+          onOk={handleCLicker}
+          onCancel={() => setIsModalVisible(false)}
+          okText="Ha"
+          cancelText="Yoq"
+          visible={isModalVisible}
+          height={100}
+        >
+          <p>Tasdiqlaysizmi?</p>
+        </Modal>
+      </motion.div >
+    </Container>
+
   );
 }
 
