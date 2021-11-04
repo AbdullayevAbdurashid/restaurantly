@@ -69,9 +69,9 @@ function Home() {
         </MobileView>
 
         <Grid container spacing={1}>
-          <Grid item xs={12} lg={12} sm={12}>
+          {/* <Grid item xs={12} lg={12} sm={12}>
             <Search loading={loading} data={data} />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} md={9} sm={12}>
             <Content loading={loading} data={data} />
           </Grid>
@@ -97,7 +97,7 @@ function Home() {
             />
             <BottomNavigationAction
               onClick={() => history.push("/check")}
-              label="Buyurtmalar"
+              label="Buyurtmalar tarixi"
               icon={<RestoreIcon />}
             />
           </BottomNavigation>

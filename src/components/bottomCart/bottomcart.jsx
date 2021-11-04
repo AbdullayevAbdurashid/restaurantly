@@ -100,7 +100,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
             <BottomSheet
                 open={isOpen}
                 onDismiss={onDismiss}
-                blocking={true}
+                blocking={false}
 
                 defaultSnap={({ maxHeight }) => maxHeight / 2}
                 snapPoints={({ maxHeight }) => [
