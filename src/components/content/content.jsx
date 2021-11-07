@@ -15,12 +15,11 @@ import { Image, Tabs } from "antd";
 function Content({ data, loading }) {
 
   const { TabPane } = Tabs;
-  const [open, setOpen] = useState(false)
 
   const [quality, setQuality] = useState({});
   const [pricer, setPrice] = useState({});
   const { addItem } = useCart();
-  const height = window.innerHeight - 55 + "px";
+  const height = window.innerHeight + 155 + "px";
   let keys = Object.keys(data);
 
   const addCart = (obj) => {
@@ -31,20 +30,13 @@ function Content({ data, loading }) {
     setPrice({ ...pricer, [id]: e.target.value });
     setQuality({ ...quality, [id]: quality });
   };
+
   return (
 
     <motion.div
       initial={{ x: -660 }}
       animate={{ x: 0 }}
       transition={{ type: "tween", stiffness: 50, duration: 0.5 }}
-      style={{
-        display: "flex",
-        gap: "20px",
-        marginTop: "5px",
-        marginLeft: "10px",
-        flexWrap: "wrap",
-        overflow: "hidden",
-      }}
     >
 
 
@@ -53,11 +45,11 @@ function Content({ data, loading }) {
 
         {keys &&
           keys.map((key, indx) => (
-            <TabPane style={{ width: 1200 }} tab={key} key={indx}>
+            <TabPane tab={key} key={indx}>
               <div>
 
                 <div key={indx} style={{ height: height }} className="mywrapper" >
-                  <Grid container spacing={2}  >
+                  <Grid container spacing={1}  >
 
                     {data &&
                       data[key].map(({ _id: id, ...obj }, index) => (
@@ -73,7 +65,7 @@ function Content({ data, loading }) {
                                 src={
                                   obj.productImage === "null" || !obj.productImage
                                     ? placeholder
-                                    : "http://localhost:4000/" + obj.productImage
+                                    : "http://192.168.43.2:4000/" + obj.productImage
                                 }
                               />
 
@@ -114,7 +106,7 @@ function Content({ data, loading }) {
                               </div>
 
                               <motion.button
-                                whileTap={{ scale: 1.1 }}
+                                whileTap={{ scale: 1.3 }}
                                 className="pplus"
                                 onClick={() => {
                                   let temprice = pricer[id] ? pricer[id] : "obj.price";
@@ -128,10 +120,11 @@ function Content({ data, loading }) {
                                     price: price,
                                     productImage: obj.productImage
                                   };
+
                                   addCart(tempObj);
                                 }}
                               >
-                                <AddIcon fontSize="small" />
+                                <AddIcon fontSize="large" />
                               </motion.button>
                             </motion.div>
                           </div>

@@ -11,7 +11,6 @@ import AddIcon from "@material-ui/icons/Add";
 import { message } from "antd";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Modal } from "antd";
 import Container from "@material-ui/core/Container";
 function Bottomcart({ opens: isOpen, func: foobar }) {
 
@@ -25,37 +24,15 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
     function onDismiss() {
         foobar(false);
     }
-    const socket = io("http://localhost:4000");
+    const socket = io("http://192.168.43.2:4000");
 
     const success = () => {
-        message.success('Buyurtmangiz jonatildi');
     };
     //Refs and states
     const [anim, setAnim] = useState(0);
     const [input, setInput] = useState(0);
 
 
-    //Sending data to server to orders page
-    const setPosst = () => {
-        socket.emit("post-order", {
-            table: input,
-            money: cartTotal,
-            foods: items,
-            time: new Date().getHours() + ":" + new Date().getMinutes()
-        });
-    };
-    //Sending data to server to stats page
-
-    const setPost = () => {
-        axios({
-            method: "post",
-            url: "http://localhost:4000/status",
-            data: {
-                date: date,
-                money: cartTotal,
-            },
-        });
-    };
     //Tracking click of end order vutton
     const handleCLicker = () => {
         if (isEmpty === false) {
@@ -70,11 +47,24 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
         }
     };
     const afterEmtyping = () => {
-        setPosst();
-        setPost();
+        socket.emit("post-order", {
+            table: input,
+            money: cartTotal,
+            foods: items,
+            time: new Date().getHours() + ":" + new Date().getMinutes()
+        });
+        axios({
+            method: "post",
+            url: "http://192.168.43.2:4000/status",
+            data: {
+                date: date,
+                money: cartTotal,
+            },
+        });
         emptyCart(); // runs first
         setAnim(0); // runs second
-        success()
+        message.success('Buyurtmangiz jonatildi');
+
     }
     //Emty cart animation
     const cartEmpty = () => {
@@ -105,8 +95,6 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                 defaultSnap={({ maxHeight }) => maxHeight / 2}
                 snapPoints={({ maxHeight }) => [
                     maxHeight - maxHeight / 10,
-                    maxHeight / 4,
-                    maxHeight * 0.6,
                 ]}
                 header={
                     <div style={{ display: "flex" }}>
@@ -118,8 +106,23 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                             marginLeft: "auto",
                             marginTop: "auto",
                             marginBottom: "5px",
+                        }}>     <h3 style={{
+                            color: "black", fontSize: "24px",
                         }}>
-                            <p style={{ fontSize: "24px", }}>Tanlangan ovqatlar</p>
+                                {" "}
+                                Summa:
+                                <CurrencyFormat
+                                    value={cartTotal}
+                                    displayType={"text"}
+                                    suffix=" sum"
+                                    thousandSeparator={true}
+                                    renderText={(value) => (
+                                        <span style={{ color: "#187CDF", fontSize: "22px" }}>
+                                            {value}
+                                        </span>
+                                    )}
+                                />
+                            </h3>
                             <motion.div
                                 onClick={() => cartEmpty()}
                                 whileTap={{ scale: 1.1 }}
@@ -183,23 +186,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                                     <br />
 
                                 </div>
-                                <h3 style={{
-                                    color: "black", fontSize: "24px", margin: "auto",
-                                }}>
-                                    {" "}
-                                    Summa:
-                                    <CurrencyFormat
-                                        value={cartTotal}
-                                        displayType={"text"}
-                                        suffix=" sum"
-                                        thousandSeparator={true}
-                                        renderText={(value) => (
-                                            <span style={{ color: "#187CDF", fontSize: "22px" }}>
-                                                {value}
-                                            </span>
-                                        )}
-                                    />
-                                </h3>
+
                             </div>
                             <motion.button
                                 whileTap={{ scale: 1.1 }}

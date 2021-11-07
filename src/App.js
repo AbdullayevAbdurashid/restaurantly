@@ -9,7 +9,7 @@ function App() {
     <CartProvider>
       <Router>
         <Switch>
-          <div className="App">
+          <div className="App" style={{ maxHeight: "200px" }}>
             <Route path="/check" component={Overall} />
             <Route exact path="/" component={Home} />
           </div>

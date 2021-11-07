@@ -9,8 +9,28 @@ import { Link } from "react-router-dom";
 import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import { isMobile } from "react-device-detect";
+import HomeIcon from "@material-ui/icons/Home";
+import { makeStyles } from "@material-ui/core/styles";
+
+import { useHistory } from "react-router-dom";
+const useStyles = makeStyles({
+  stickToBottom: {
+    zIndex: "2",
+    width: "100%",
+    position: "fixed",
+    bottom: 0,
+  },
+  root: {
+    width: 500,
+  },
+});
+
 function Overall() {
-  const socket = io("http://localhost:4000");
+  let history = useHistory();
+  const classes = useStyles();
+
+  const socket = io("http://192.168.43.2:4000");
   const [service, setService] = useState([]);
   const [data, setData] = useState([]);
   const [table, setsingleTable] = useState([false]);
@@ -19,6 +39,7 @@ function Overall() {
   const [inputValues, setInputValues] = useState("");
   const [isIncorrect, setIncorrect] = useState(false);
   const [anim, setAnim] = useState(0);
+  const [value, setValue] = useState();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -27,14 +48,14 @@ function Overall() {
   useEffect(() => {
     socket.on("recieve-order", (message) => {
       (async function () {
-        const { data } = await axios.get("http://localhost:4000/orders");
+        const { data } = await axios.get("http://192.168.43.2:4000/orders");
         setData(data);
       })();
     });
     (async function () {
-      const { data } = await axios.get("http://localhost:4000/orders");
+      const { data } = await axios.get("http://192.168.43.2:4000/orders");
       const { data: servicee } = await axios.get(
-        "http://localhost:4000/service"
+        "http://192.168.43.2:4000/service"
       );
       setService(servicee);
       setData(data);
@@ -136,6 +157,7 @@ function Overall() {
     // allOrdersFromSingleTable is what u should print
     setsingleTable([allOrdersFromSingleTable]);
   }
+
   const password = "admin2020";
   const deleteObj = (id) => {
     if (inputValues === password) {
@@ -152,9 +174,7 @@ function Overall() {
     }
   };
   return (
-    <Container maxWidth="lg"
-    >
-
+    <Container>
       <motion.div className="cheklist"
         initial={{ y: -900 }}
         animate={{ y: 0 }}
@@ -282,7 +302,24 @@ function Overall() {
           </div>
         ))}
       </motion.div>
-    </Container>
+
+      {isMobile ? (
+        <BottomNavigation
+          value={value}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+          }}
+          showLabels
+          className={classes.stickToBottom}
+        >
+          <BottomNavigationAction label="Asosiy"
+            onClick={() => history.push("/")}
+
+            icon={<HomeIcon />} />
+        </BottomNavigation>
+      ) : null}
+    </Container >
+
   );
 }
 

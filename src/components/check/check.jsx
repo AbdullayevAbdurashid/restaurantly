@@ -1,327 +1,273 @@
-import React, { useState, useEffect } from "react";
-import { io } from "socket.io-client";
-import axios from "axios";
-import Container from "@material-ui/core/Container";
+import React, { useState } from "react";
+import { useCart } from "react-use-cart";
 import { motion } from "framer-motion";
-import { Modal, Input, Table, InputNumber } from "antd";
+import Divider from "@material-ui/core/Divider";
+import "./check.css";
+import axios from "axios";
+import { io } from "socket.io-client";
 import CurrencyFormat from "react-currency-format";
+import AddIcon from "@material-ui/icons/Add";
+import { Button } from "antd";
+import RemoveIcon from "@material-ui/icons/Remove";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { Modal } from "antd";
+import PlaylistAddCheckOutlinedIcon from '@material-ui/icons/PlaylistAddCheckOutlined';
 import { Link } from "react-router-dom";
-import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-import { isMobile } from "react-device-detect";
-import HomeIcon from "@material-ui/icons/Home";
-import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
-import { useHistory } from "react-router-dom";
-const useStyles = makeStyles({
-  stickToBottom: {
-    zIndex: "2",
-    width: "100%",
-    position: "fixed",
-    bottom: 0,
-  },
-  root: {
-    width: 500,
-  },
-});
+const socket = io("http://192.168.43.2:4000");
+function Check() {
+  const {
+    isEmpty,
+    cartTotal,
+    items,
+    updateItemQuantity,
+    emptyCart,
+  } = useCart();
 
-function Overall() {
-  let history = useHistory();
-  const classes = useStyles();
-
-  const socket = io("http://localhost:4000");
-  const [service, setService] = useState([]);
-  const [data, setData] = useState([]);
-  const [table, setsingleTable] = useState([false]);
-  const [inputValue, setInputValue] = useState(1);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [inputValues, setInputValues] = useState("");
-  const [isIncorrect, setIncorrect] = useState(false);
+  //Refs and states
   const [anim, setAnim] = useState(0);
-  const [value, setValue] = useState();
+  const [input, setInput] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
-
-  useEffect(() => {
-    socket.on("recieve-order", (message) => {
-      (async function () {
-        const { data } = await axios.get("http://localhost:4000/orders");
-        setData(data);
-      })();
+  //Sending data to server to orders page
+  const setPosst = () => {
+    socket.emit("post-order", {
+      table: input,
+      money: cartTotal,
+      foods: items,
+      time: new Date().getHours() + ":" + new Date().getMinutes()
     });
-    (async function () {
-      const { data } = await axios.get("http://localhost:4000/orders");
-      const { data: servicee } = await axios.get(
-        "http://localhost:4000/service"
-      );
-      setService(servicee);
-      setData(data);
-    })();
-  }, []);
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => <p>{text}</p>,
-    },
-    {
-      title: "Narxi",
-      dataIndex: "price",
-      key: "price",
-      render: (value) => (
-        <p>
-          {" "}
-          <CurrencyFormat
-            value={value}
-            displayType={"text"}
-            suffix=" sum"
-            thousandSeparator={true}
-            renderText={(value) => <p className="">{value} </p>}
-          />
-        </p>
-      ),
-    },
-    {
-      title: "Soni",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
-      title: "Summa",
-      dataIndex: "allprice",
-      key: "allPrice",
-      render: (value) => (
-        <p>
-          {" "}
-          <CurrencyFormat
-            value={value}
-            displayType={"text"}
-            suffix=" sum"
-            thousandSeparator={true}
-            renderText={(value) => (
-              <p style={{ color: "#187CDF", fontWeight: "bold" }}>{value} </p>
-            )}
-          />
-        </p>
-      ),
-    },
-  ];
+  };
+  //Sending data to server to stats page
 
-  function filterTables() {
-    let allOrders = {};
-    let allOrdersFromSingleTable = data
-      .filter((obj) => obj.table === inputValue)
-      .reduce((acc, obj) => {
-        acc.table = obj.table;
-        acc.foods = [];
-
-        acc.id = obj._id;
-        if (!acc.money) {
-          acc.money = obj.money;
-        } else {
-          acc.money = acc.money + obj.money;
-        }
-
-        obj.foods.forEach((foodObj) => {
-          if (!allOrders[foodObj.name]) {
-            allOrders[foodObj.name] = {
-              q: foodObj.quantity,
-              price: foodObj.price,
-              allPrice: foodObj.price * foodObj.quantity,
-            };
-          } else {
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.q] + foodObj.quantity;
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.price] + foodObj.price;
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.allpPrice] +
-              foodObj.price * foodObj.quantity;
-          }
-        });
-        return acc;
-      }, {});
-    allOrders = Object.entries(allOrders).map(([key, value]) => {
-      return {
-        name: key,
-        quantity: value.q,
-        price: value.price,
-        allprice: value.allPrice,
-      };
+  const setPost = () => {
+    axios({
+      method: "post",
+      url: "http://192.168.1.2:4000/status",
+      data: {
+        date: date,
+        money: cartTotal,
+      },
     });
-    allOrdersFromSingleTable.foods = allOrders;
-    // allOrdersFromSingleTable is what u should print
-    setsingleTable([allOrdersFromSingleTable]);
-  }
-  const password = "admin2020";
-  const deleteObj = (id) => {
-    if (inputValues === password) {
-      socket.emit("done-order", id);
-      setIsModalVisible(false);
-
-      setTimeout(() => {
-        setAnim(1800);
-        window.location.reload(true);
-
-      }, 1000);
-    } else {
-      setIncorrect(true);
+  };
+  //Tracking click of end order vutton
+  const handleCLicker = () => {
+    if (isEmpty === false) {
+      if (input) {
+        setAnim(1600);
+        setTimeout(function () {
+          setPosst();
+          setPost();
+          emptyCart(); // runs first
+          setAnim(0); // runs second
+          setIsModalVisible(false);
+        }, 1000);
+      } else if (input === 0) {
+        alert("Stolni raqamini kiritng");
+      }
     }
   };
+
+  //Emty cart animation
+  const cartEmpty = () => {
+    setAnim(1600);
+    setTimeout(function () {
+      emptyCart(); // runs first
+      setAnim(0); // runs second
+    }, 1000);
+  };
+  //Framer motion stuff
+  const itemss = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1 },
+  };
+  const height = window.innerHeight - 255 + "px";
+
+  //Taking date
+  let newDate = new Date();
+  let month = newDate.getMonth() + 1;
+  let date = newDate.getDate() + "/" + month + "/" + newDate.getFullYear();
   return (
-    <Container maxWidth="lg"
-    >
+    <Container style={{ width: '70%' }}>
 
-      <motion.div className="cheklist"
-        initial={{ y: -900 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
+      <motion.div
+        initial={{ x: 360 }}
+        animate={{ x: 0 }}
+        transition={{ type: "tween", stiffness: 50, duration: 0.5 }}
+        style={{ marginTop: "6px" }
+        }
       >
+        <motion.div className="mywrapperr" style={{ height: height }}>
+          <div style={{ display: "flex" }}>
 
-        <Link to="/">
-          <motion.button
-            whileTap={{ scale: 1.1 }}
-            className="filterButton"
-            style={{
-              marginLeft: "-140px",
-              height: "35px",
-              transform: "none",
-              texAlign: "center",
-            }}
-          >
-            <ArrowBackOutlinedIcon />
-          </motion.button>          </Link>
-        <div style={{ marginBottom: "20px", width: "100%", display: "flex" }}>
+            <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Tanlangan taomlar</p>
+            <div style={{
+              display: "flex", flexDirection: "column",
+              width: "80px",
+              height: "30px",
+              marginLeft: "auto",
+              marginTop: "auto",
+              marginBottom: "5px",
+            }}>
 
-          <div style={{ display: "flex", gap: "10px" }}>
-            <p style={{ fontSize: "16px" }}>Stol raqami: </p>
-            <InputNumber
-              placeholder="1"
+
+            </div>
+            <motion.div
+              onClick={() => cartEmpty()}
+              whileTap={{ scale: 1.1 }}
+              style={{
+                fontSize: "14px",
+                width: "80px",
+                height: "30px",
+                marginLeft: "auto",
+                marginTop: "auto",
+                marginBottom: "5px",
+              }}
+            >
+              <DeleteIcon
+                style={{
+                  color: "#d60505",
+                  fontSize: "14px",
+                  width: "100px",
+                  height: "40px",
+                  marginLeft: "auto",
+                  marginBottom: "0px",
+                }}
+              />
+            </motion.div>
+          </div>
+
+          <Divider style={{ background: "blue" }} />
+
+          <div className="main" style={{ height: height }}>
+            {items.map((item) => (
+              <div key={item.id} className="itemMain">
+                <motion.div
+                  variants={itemss}
+                  transition={{ duration: 0.5 }}
+                  initial={{ x: 460 }}
+                  animate={{ x: anim }}
+                  className="productts"
+                >
+                  <div>
+                    <p className="firstName">{item.name}</p>
+
+                    <CurrencyFormat
+                      value={item.price * item.quantity}
+                      displayType={"text"}
+                      suffix=" sum"
+                      thousandSeparator={true}
+                      renderText={(value) => (
+                        <motion.p className="secondName"> {value} </motion.p>
+                      )}
+                    />
+                  </div>
+                  <div className="productss">
+                    <motion.button
+                      whileTap={{ scale: 1.1 }}
+                      className="pplus"
+                      onClick={() =>
+                        updateItemQuantity(item.id, item.quantity + 1)
+                      }
+                    >
+                      <AddIcon fontSize="small" />
+                    </motion.button>
+                    <p className="quan">{item.quantity}</p>
+                    <motion.button
+                      whileTap={{ scale: 1.1 }}
+                      className="pplus"
+                      onClick={() =>
+                        updateItemQuantity(item.id, item.quantity - 1)
+                      }
+                    >
+                      <RemoveIcon fontSize="small" />
+                    </motion.button>
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+          </div>
+
+          {/* Button stuff */}
+          <div className="table">
+            <p
+              style={{
+                margin: "auto",
+                fontSize: "22px",
+                paddingRight: "30px",
+              }}
+            >
+
+              Stol raqami{" "}
+            </p>
+
+            <input
               type="number"
-              size="small"
-              style={{ height: "25px", width: "50px" }}
               min="0"
               max="100"
-              onChange={(e) => setInputValue(parseInt(e))}
+              value={input}
+              style={{
+                width: "75px",
+                height: "35px",
+                margin: "auto",
+                fontSize: "20px",
+                borderRadius: "5px",
+                boxShadow: " 2px 2px 5px 4px rgba(0, 0, 0, 0.25)",
+                border: 0,
+              }}
+              onChange={(e) => setInput(e.target.value)}
             />
+            <br />
           </div>
-          <motion.button
-            whileTap={{ scale: 1.1 }}
-            className="filterButton"
-            onClick={() => {
-              filterTables();
-              setAnim(0);
-            }}
-          >
-            Izlash
-          </motion.button>
-        </div>
-        {table.map((obj, index) => (
-          <div>
-            <motion.div initial={{ x: 0 }} animate={{ x: anim }}>
-              <Table size="middle" columns={columns} dataSource={obj.foods} />
-            </motion.div>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "2px" }}
-            >
-              <div style={{ display: "flex", gap: "20px" }}>
+          <div className="p">
+            <div className='p'>
+              <h3 style={{
+                color: "black", fontSize: "24px", margin: "auto",
+              }}>
                 {" "}
+                Jami:
                 <CurrencyFormat
-                  value={obj.money}
+                  value={cartTotal}
                   displayType={"text"}
                   suffix=" sum"
                   thousandSeparator={true}
                   renderText={(value) => (
-                    <p style={{ fontSize: "19px" }}>
-                      Jami: {" "}
-                      <span style={{ fontWeight: "bold", color: "#187CDF" }}>
-                        {value}
-                      </span>
-                    </p>
+                    <span style={{ color: "#187CDF", fontSize: "22px" }}>
+                      {value}
+                    </span>
                   )}
                 />
-                <p style={{ fontSize: "19px" }}>
-                  Usluga: {""}
-                  <span style={{ fontWeight: "bold", color: "#187CDF" }}>
-                    {service}%
-                  </span>
-                </p>
-              </div>
-              <div>
-                {" "}
-                <p style={{ fontSize: "22px" }}>
-                  Hammasi: {""}
-                  <CurrencyFormat
-                    value={Math.trunc(obj.money + (obj.money / 100) * service)}
-                    displayType={"text"}
-                    suffix=" sum"
-                    thousandSeparator={true}
-                    renderText={(value) => (
-                      <span style={{ fontWeight: "bold", color: "#FF3131" }}>
-                        {value}
-                      </span>
-                    )}
-                  />
-                </p>
-              </div>
+              </h3>
             </div>
+
             <motion.button
               whileTap={{ scale: 1.1 }}
               className="pl"
-              style={{ marginTop: "60px" }}
               onClick={showModal}
             >
-              Pul tolandi
+              Jonatish{" "}
             </motion.button>
-            <Modal
-              title="Parol"
-              onOk={() => deleteObj(obj.table)}
-              onCancel={() => setIsModalVisible(false)}
-              okText="Tasdiqlash"
-              cancelText="Orqaga"
-              visible={isModalVisible}
-              height={100}
-            >
-              <p>Parolni Kiriting</p>
-
-              {isIncorrect ? (
-                <h4 className="errorInput" style={{ color: "red" }}>
-                  Parol Notogri{" "}
-                </h4>
-              ) : null}
-
-              <Input.Password
-                style={{ width: "300px" }}
-                onChange={(e) => setInputValues(e.target.value)}
-                placeholder="Parolni kiritng"
-              />
-            </Modal>
           </div>
-        ))}
-      </motion.div>
-
-      {isMobile ? (
-        <BottomNavigation
-          value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-          showLabels
-          className={classes.stickToBottom}
+        </motion.div>
+        <Modal
+          title="Tasdiqlash"
+          onOk={handleCLicker}
+          onCancel={() => setIsModalVisible(false)}
+          okText="Ha"
+          cancelText="Yoq"
+          visible={isModalVisible}
+          height={100}
         >
-          <BottomNavigationAction label="Asosiy"
-            onClick={() => history.push("/")}
-
-            icon={<HomeIcon />} />
-        </BottomNavigation>
-      ) : null}
+          <p>Tasdiqlaysizmi?</p>
+        </Modal>
+      </motion.div >
     </Container >
 
   );
 }
 
-export default Overall;
+export default Check;
