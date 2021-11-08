@@ -225,7 +225,7 @@ function Overall() {
     }
   };
   return (
-    <Container>
+    <Container maxWidth="sm">
       <motion.div className="cheklist"
         initial={{ y: -900 }}
         animate={{ y: 0 }}

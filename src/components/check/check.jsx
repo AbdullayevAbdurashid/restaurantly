@@ -105,7 +105,13 @@ function Check() {
         <motion.div className="mywrapperr" style={{ height: height }}>
           <div style={{ display: "flex" }}>
 
-            <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Tanlangan taomlar</p>
+            <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Chek:</p>
+            <Link to="/check">
+
+              <Button type="dashed" shape="" icon={<PlaylistAddCheckOutlinedIcon />} >
+              </Button>
+            </Link>
+
             <div style={{
               display: "flex", flexDirection: "column",
               width: "80px",

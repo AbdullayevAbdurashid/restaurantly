@@ -42,7 +42,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                     afterEmtyping()
                 }, 1000);
             } else if (input === 0) {
-                message.error("QR CODNI QAYTA SKANER QILISNG");
+                message.error("QR CODNI QAYTA SKANER QILING!");
             }
         }
     };
