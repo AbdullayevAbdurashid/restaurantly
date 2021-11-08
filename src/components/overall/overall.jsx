@@ -1,22 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
-import { Table } from "antd";
-import { InputNumber } from "antd";
 import Container from "@material-ui/core/Container";
 import { motion } from "framer-motion";
-import { Modal } from "antd";
-import { Input } from "antd";
+import { Modal, Input, Table, InputNumber } from "antd";
+import CurrencyFormat from "react-currency-format";
+import { Link } from "react-router-dom";
+import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import { isMobile } from "react-device-detect";
+import HomeIcon from "@material-ui/icons/Home";
+import { makeStyles } from "@material-ui/core/styles";
+
+import { useHistory } from "react-router-dom";
+const useStyles = makeStyles({
+  stickToBottom: {
+    zIndex: "2",
+    width: "100%",
+    position: "fixed",
+    bottom: 0,
+  },
+  root: {
+    width: 500,
+  },
+});
 
 function Overall() {
+  let history = useHistory();
+  const classes = useStyles();
+  const input = localStorage.getItem("table");
+
   const socket = io("http://localhost:4000");
+  const [service, setService] = useState([]);
   const [data, setData] = useState([]);
   const [table, setsingleTable] = useState([false]);
-  const [inputValue, setInputValue] = useState(1);
+  const [inputValue, setInputValue] = useState(parseInt(input));
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [inputValues, setInputValues] = useState("");
+  const [inputValues, setInputValues] = useState(input);
   const [isIncorrect, setIncorrect] = useState(false);
   const [anim, setAnim] = useState(0);
+  const [value, setValue] = useState();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -31,7 +55,59 @@ function Overall() {
     });
     (async function () {
       const { data } = await axios.get("http://localhost:4000/orders");
+      const { data: servicee } = await axios.get(
+        "http://localhost:4000/service"
+      );
+      setService(servicee);
       setData(data);
+      if (data) {
+        let allOrders = {};
+        let allOrdersFromSingleTable = data
+          .filter((obj) => {
+            return obj.table === inputValue
+          })
+          .reduce((acc, obj) => {
+            acc.table = obj.table;
+            acc.foods = [];
+
+            acc.id = obj._id;
+            if (!acc.money) {
+              acc.money = obj.money;
+            } else {
+              acc.money = acc.money + obj.money;
+            }
+
+            obj.foods.forEach((foodObj) => {
+              if (!allOrders[foodObj.name]) {
+                allOrders[foodObj.name] = {
+                  q: foodObj.quantity,
+                  price: foodObj.price,
+                  allPrice: foodObj.price * foodObj.quantity,
+                };
+              } else {
+                allOrders[foodObj.name].q =
+                  allOrders[foodObj.name].q + foodObj.quantity;
+                allOrders[foodObj.name].price =
+                  allOrders[foodObj.name].price + foodObj.price;
+                allOrders[foodObj.name].allpPrice =
+                  allOrders[foodObj.name].allpPrice +
+                  foodObj.price * foodObj.quantity;
+              }
+            });
+            return acc;
+          }, {});
+        allOrders = Object.entries(allOrders).map(([key, value]) => {
+          return {
+            name: key,
+            quantity: value.q,
+            price: value.price,
+            allprice: value.allPrice,
+          };
+        });
+        allOrdersFromSingleTable.foods = allOrders;
+        // allOrdersFromSingleTable is what u should print
+        setsingleTable([allOrdersFromSingleTable]);
+      }
     })();
   }, []);
   const columns = [
@@ -45,6 +121,18 @@ function Overall() {
       title: "Narxi",
       dataIndex: "price",
       key: "price",
+      render: (value) => (
+        <p>
+          {" "}
+          <CurrencyFormat
+            value={value}
+            displayType={"text"}
+            suffix=" sum"
+            thousandSeparator={true}
+            renderText={(value) => <p className="">{value} </p>}
+          />
+        </p>
+      ),
     },
     {
       title: "Soni",
@@ -55,13 +143,30 @@ function Overall() {
       title: "Summa",
       dataIndex: "allprice",
       key: "allPrice",
+      render: (value) => (
+        <p>
+          {" "}
+          <CurrencyFormat
+            value={value}
+            displayType={"text"}
+            suffix=" sum"
+            thousandSeparator={true}
+            renderText={(value) => (
+              <p style={{ color: "#187CDF", fontWeight: "bold" }}>{value} </p>
+            )}
+          />
+        </p>
+      ),
     },
   ];
+
 
   function filterTables() {
     let allOrders = {};
     let allOrdersFromSingleTable = data
-      .filter((obj) => obj.table === inputValue)
+      .filter((obj) => {
+        return obj.table === inputValue
+      })
       .reduce((acc, obj) => {
         acc.table = obj.table;
         acc.foods = [];
@@ -81,13 +186,12 @@ function Overall() {
               allPrice: foodObj.price * foodObj.quantity,
             };
           } else {
-            console.log(foodObj);
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.q] + foodObj.quantity;
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.price] + foodObj.price;
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.allpPrice] +
+            allOrders[foodObj.name].q =
+              allOrders[foodObj.name].q + foodObj.quantity;
+            allOrders[foodObj.name].price =
+              allOrders[foodObj.name].price + foodObj.price;
+            allOrders[foodObj.name].allpPrice =
+              allOrders[foodObj.name].allpPrice +
               foodObj.price * foodObj.quantity;
           }
         });
@@ -113,24 +217,45 @@ function Overall() {
 
       setTimeout(() => {
         setAnim(1800);
+        window.location.reload(true);
+
       }, 1000);
     } else {
       setIncorrect(true);
     }
   };
-  console.log(inputValues);
   return (
-    <Container maxWidth="lg">
-      <div className="cheklist">
+    <Container maxWidth="sm">
+      <motion.div className="cheklist"
+        initial={{ y: -900 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+
+        <Link to="/">
+          <motion.button
+            whileTap={{ scale: 1.1 }}
+            className="filterButton"
+            style={{
+              marginLeft: "-140px",
+              height: "35px",
+              transform: "none",
+              texAlign: "center",
+            }}
+          >
+            <ArrowBackOutlinedIcon />
+          </motion.button>          </Link>
         <div style={{ marginBottom: "20px", width: "100%", display: "flex" }}>
+
           <div style={{ display: "flex", gap: "10px" }}>
-            <p style={{ fontSize: "16px" }}>Stol raqami:</p>
+            <p style={{ fontSize: "16px" }}>Stol raqami: </p>
             <InputNumber
-              placeholder="1"
+              placeholder={input}
+              defaultValue={input}
               type="number"
               size="small"
               style={{ height: "25px", width: "50px" }}
-              min="1"
+              min="0"
               max="100"
               onChange={(e) => setInputValue(parseInt(e))}
             />
@@ -156,16 +281,24 @@ function Overall() {
             >
               <div style={{ display: "flex", gap: "20px" }}>
                 {" "}
-                <p style={{ fontSize: "19px" }}>
-                  Jami:{" "}
-                  <span style={{ fontWeight: "bold", color: "#187CDF" }}>
-                    {obj.money}
-                  </span>
-                </p>
+                <CurrencyFormat
+                  value={obj.money}
+                  displayType={"text"}
+                  suffix=" sum"
+                  thousandSeparator={true}
+                  renderText={(value) => (
+                    <p style={{ fontSize: "19px" }}>
+                      Jami: {" "}
+                      <span style={{ fontWeight: "bold", color: "#187CDF" }}>
+                        {value}
+                      </span>
+                    </p>
+                  )}
+                />
                 <p style={{ fontSize: "19px" }}>
                   Usluga: {""}
                   <span style={{ fontWeight: "bold", color: "#187CDF" }}>
-                    10%
+                    {service}%
                   </span>
                 </p>
               </div>
@@ -173,9 +306,17 @@ function Overall() {
                 {" "}
                 <p style={{ fontSize: "22px" }}>
                   Hammasi: {""}
-                  <span style={{ fontWeight: "bold", color: "#FF3131" }}>
-                    {Math.trunc(obj.money + (obj.money / 100) * 10)}
-                  </span>
+                  <CurrencyFormat
+                    value={Math.trunc(obj.money + (obj.money / 100) * service)}
+                    displayType={"text"}
+                    suffix=" sum"
+                    thousandSeparator={true}
+                    renderText={(value) => (
+                      <span style={{ fontWeight: "bold", color: "#FF3131" }}>
+                        {value}
+                      </span>
+                    )}
+                  />
                 </p>
               </div>
             </div>
@@ -212,8 +353,25 @@ function Overall() {
             </Modal>
           </div>
         ))}
-      </div>
-    </Container>
+      </motion.div>
+
+      {isMobile ? (
+        <BottomNavigation
+          value={value}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+          }}
+          showLabels
+          className={classes.stickToBottom}
+        >
+          <BottomNavigationAction label="Asosiy"
+            onClick={() => history.push("/")}
+
+            icon={<HomeIcon />} />
+        </BottomNavigation>
+      ) : null}
+    </Container >
+
   );
 }
 

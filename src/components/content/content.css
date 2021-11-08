@@ -13,7 +13,13 @@
   width: 275px;
   align-items: center;
 }
-
+.ant-tabs {
+  width: 100%;
+}
+button:hover,
+button:focus {
+  outline: none;
+}
 .mywrapper {
   overflow: auto;
   margin: 0, 30px;
@@ -34,9 +40,10 @@
   margin-top: 5px;
 
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 20px;
 }
 .secondName {
+  font-size: 18px;
   margin-top: -20px;
   margin-bottom: auto;
   color: #1948f0;
@@ -51,4 +58,10 @@
 }
 .cheklist {
   margin-top: 200px;
+}
+.ant-tabs-tab {
+  padding-left: 10px !important;
+  padding: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
 }

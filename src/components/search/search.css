@@ -9,6 +9,15 @@
   display: block;
   position: absolute;
 }
+.searcher {
+  transition: 1s;
+  left: 350px;
+  border: none;
+  background: transparent;
+  position: absolute;
+  margin-top: -1;
+  top: 49px;
+}
 .searchOne {
   z-index: 999;
   display: flex;
@@ -20,17 +29,20 @@
   box-shadow: -2px -1px 8px 0px rgba(34, 60, 80, 0.28);
   border-radius: 20px;
 }
+
 .searchWrapper {
   z-index: 999;
-  height: 400px;
+  max-height: 400px;
   overflow: auto;
   background-color: rgb(255, 255, 255);
   margin-top: 10px;
   color: black;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
   box-shadow: -2px 1px 8px 3px rgba(34, 60, 80, 0.28);
   border-radius: 20px;
-  width: 300px;
+  max-width: 250px;
 }
 
 .searchInput {
@@ -48,13 +60,15 @@
 .searchInput:focus {
   outline: none;
 }
-.searcher {
-  transition: 1s;
-  margin-left: 175px;
-  border: none;
-  background: transparent;
-  position: absolute;
-  margin-top: -1;
+@media only screen and (min-width: 992px) {
+  .searcher {
+    transition: 1s;
+    margin-left: 122px;
+    border: none;
+    background: transparent;
+    position: absolute;
+    margin-top: -1;
+  }
 }
 
 .button_plus {
@@ -65,10 +79,11 @@
   border: 2px solid rgb(122, 23, 179);
   background-color: transparent;
   transition: 0.1s;
+  margin-bottom: 10px;
+  margin-left: 15px;
 }
 .cheklist {
-  width: 500px;
-  margin: 70px auto;
+  margin: 20px auto;
 }
 .filterButton {
   border: none;

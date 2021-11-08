@@ -25,7 +25,9 @@ li {
   justify-content: space-between;
   align-content: space-between;
 }
-
+.data-rsbs-overlay {
+  z-index: 22 !important;
+}
 .productss {
   margin-right: auto;
   padding: 5px;
@@ -34,37 +36,38 @@ li {
   gap: 5px;
   height: 70px;
 }
+.floating_button {
+  position: absolute;
+}
+.paragraph {
+  display: flex;
+  text-align: center;
+  margin-bottom: 10px;
+}
 .table {
   margin-right: auto;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
-  align-content: flex-start;
-  margin-bottom: 10px;
-  display: flex;
 }
 
 .mywrapperr {
   flex-wrap: nowrap;
   margin: 0, 30px;
-  display: flex;
   flex-direction: column;
 }
 .pplus {
-  background: transparent;
-  margin-right: auto;
+  margin: auto;
   border-radius: 100%;
-  margin-bottom: 10px;
   color: rgb(122, 23, 179);
   border: 2px solid rgb(122, 23, 179);
   background-color: transparent;
-  transition: 0.1s;
 }
 
 .firstName {
   margin-top: 5px;
-
+  font-weight: 600;
   text-transform: uppercase;
-  font-size: 18px;
+  font-size: 15px;
 }
 .secondName {
   margin-top: -20px;
@@ -84,10 +87,19 @@ li {
   cursor: pointer;
   font-size: 16px;
 }
+.pplus {
+  transition: 0.5s;
+}
+.pplus:active {
+  transform: scale(2.7);
+}
 .p {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
+  margin-bottom: 30px;
   margin-top: auto;
   position: relative;
-  width: 100%;
 }
 .pl {
   background-image: linear-gradient(94.21deg, #fc8e3e -4.66%, #c20fa6 93.91%);
