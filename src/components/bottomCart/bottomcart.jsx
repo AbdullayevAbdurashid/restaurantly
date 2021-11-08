@@ -55,7 +55,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
         });
         axios({
             method: "post",
-            url: "http://192.168.43.2:4000/status",
+            url: "http://localhost:4000/status",
             data: {
                 date: date,
                 money: cartTotal,
