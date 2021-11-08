@@ -56,14 +56,11 @@ li {
   flex-direction: column;
 }
 .pplus {
-  background: transparent;
-  margin-right: auto;
+  margin: auto;
   border-radius: 100%;
-  margin-bottom: 10px;
   color: rgb(122, 23, 179);
   border: 2px solid rgb(122, 23, 179);
   background-color: transparent;
-  transition: 0.1s;
 }
 
 .firstName {
@@ -89,6 +86,12 @@ li {
   color: white;
   cursor: pointer;
   font-size: 16px;
+}
+.pplus {
+  transition: 0.5s;
+}
+.pplus:active {
+  transform: scale(2.7);
 }
 .p {
   display: flex;

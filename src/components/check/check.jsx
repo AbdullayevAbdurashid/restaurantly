@@ -7,10 +7,14 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import CurrencyFormat from "react-currency-format";
 import AddIcon from "@material-ui/icons/Add";
+import { Button } from "antd";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Modal } from "antd";
+import PlaylistAddCheckOutlinedIcon from '@material-ui/icons/PlaylistAddCheckOutlined';
+import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
+import { message } from "antd";
 
 const socket = io("http://localhost:4000");
 function Check() {
@@ -24,12 +28,13 @@ function Check() {
 
   //Refs and states
   const [anim, setAnim] = useState(0);
-  const [input, setInput] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
+  const input = sessionStorage.getItem("table");
+
   //Sending data to server to orders page
   const setPosst = () => {
     socket.emit("post-order", {
@@ -44,7 +49,7 @@ function Check() {
   const setPost = () => {
     axios({
       method: "post",
-      url: "http://192.168.43.2:4000/status",
+      url: "http://localhost:4000/status",
       data: {
         date: date,
         money: cartTotal,
@@ -54,7 +59,7 @@ function Check() {
   //Tracking click of end order vutton
   const handleCLicker = () => {
     if (isEmpty === false) {
-      if (input) {
+      if (input !== "null" || null) {
         setAnim(1600);
         setTimeout(function () {
           setPosst();
@@ -63,12 +68,11 @@ function Check() {
           setAnim(0); // runs second
           setIsModalVisible(false);
         }, 1000);
-      } else if (input === 0) {
-        alert("Stolni raqamini kiritng");
+      } else {
+        message.error("QR CODNI QAYTA SKANER QILISNG");
       }
     }
   };
-
   //Emty cart animation
   const cartEmpty = () => {
     setAnim(1600);
@@ -89,18 +93,25 @@ function Check() {
   let month = newDate.getMonth() + 1;
   let date = newDate.getDate() + "/" + month + "/" + newDate.getFullYear();
   return (
-    <Container>
+    <Container style={{ width: '70%' }}>
 
       <motion.div
         initial={{ x: 360 }}
         animate={{ x: 0 }}
         transition={{ type: "tween", stiffness: 50, duration: 0.5 }}
-        style={{ marginTop: "7px" }}
+        style={{ marginTop: "6px" }
+        }
       >
         <motion.div className="mywrapperr" style={{ height: height }}>
           <div style={{ display: "flex" }}>
 
-            <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Tanlangan taomlar</p>
+            <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Chek:</p>
+            <Link to="/check">
+
+              <Button type="dashed" shape="" icon={<PlaylistAddCheckOutlinedIcon />} >
+              </Button>
+            </Link>
+
             <div style={{
               display: "flex", flexDirection: "column",
               width: "80px",
@@ -164,7 +175,7 @@ function Check() {
                   </div>
                   <div className="productss">
                     <motion.button
-                      whileTap={{ scale: 1.1 }}
+                      whileTap={{ scale: 2.1 }}
                       className="pplus"
                       onClick={() =>
                         updateItemQuantity(item.id, item.quantity + 1)
@@ -189,36 +200,7 @@ function Check() {
           </div>
 
           {/* Button stuff */}
-          <div className="table">
-            <p
-              style={{
-                margin: "auto",
-                fontSize: "22px",
-                paddingRight: "30px",
-              }}
-            >
 
-              Stol raqami{" "}
-            </p>
-
-            <input
-              type="number"
-              min="0"
-              max="100"
-              value={input}
-              style={{
-                width: "75px",
-                height: "35px",
-                margin: "auto",
-                fontSize: "20px",
-                borderRadius: "5px",
-                boxShadow: " 2px 2px 5px 4px rgba(0, 0, 0, 0.25)",
-                border: 0,
-              }}
-              onChange={(e) => setInput(e.target.value)}
-            />
-            <br />
-          </div>
           <div className="p">
             <div className='p'>
               <h3 style={{
@@ -261,7 +243,7 @@ function Check() {
           <p>Tasdiqlaysizmi?</p>
         </Modal>
       </motion.div >
-    </Container>
+    </Container >
 
   );
 }

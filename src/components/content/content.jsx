@@ -11,16 +11,24 @@ import { useCart } from "react-use-cart";
 import Grid from '@material-ui/core/Grid';
 import CurrencyFormat from "react-currency-format";
 import { Image, Tabs } from "antd";
+import LazyLoad from 'react-lazyload';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 function Content({ data, loading }) {
 
   const { TabPane } = Tabs;
-  const [open, setOpen] = useState(false)
 
   const [quality, setQuality] = useState({});
   const [pricer, setPrice] = useState({});
   const { addItem } = useCart();
-  const height = window.innerHeight - 55 + "px";
+  const height = window.innerHeight + 55 + "px";
   let keys = Object.keys(data);
 
   const addCart = (obj) => {
@@ -31,20 +39,13 @@ function Content({ data, loading }) {
     setPrice({ ...pricer, [id]: e.target.value });
     setQuality({ ...quality, [id]: quality });
   };
+
   return (
 
     <motion.div
       initial={{ x: -660 }}
       animate={{ x: 0 }}
       transition={{ type: "tween", stiffness: 50, duration: 0.5 }}
-      style={{
-        display: "flex",
-        gap: "20px",
-        marginTop: "5px",
-        marginLeft: "10px",
-        flexWrap: "wrap",
-        overflow: "hidden",
-      }}
     >
 
 
@@ -53,41 +54,66 @@ function Content({ data, loading }) {
 
         {keys &&
           keys.map((key, indx) => (
-            <TabPane style={{ width: 1200 }} tab={key} key={indx}>
-              <div>
+            <TabPane tab={key} key={indx}>
+              <LazyLoad once={true}>
 
-                <div key={indx} style={{ height: height }} className="mywrapper" >
-                  <Grid container spacing={2}  >
+                <div>
 
-                    {data &&
-                      data[key].map(({ _id: id, ...obj }, index) => (
-                        <Grid item xs={12} sm={12} md={6} lg={4}>
-                          <div>
+                  <div key={indx} style={{ height: height, padding: "10px", marginBottom: "70PX" }} className="mywrapper" >
+                    <Grid container spacing={2}  >
 
+                      {data &&
+                        data[key].map(({ _id: id, ...obj }, index) => (
+                          <Grid item xs={6} sm={6} md={3} lg={3}
 
-                            <motion.div key={obj.id} className="products">
-                              <Image
-                                style={{ borderRadius: "15px", marginTop: "10px" }}
-                                width={87}
-                                height={65}
-                                src={
-                                  obj.productImage === "null" || !obj.productImage
+                          >
+                            <Card
+                            >
+                              <CardActionArea onClick={() => {
+                                let temprice = pricer[id] ? pricer[id] : "obj.price";
+                                let price = eval(temprice);
+                                let qual = quality[id] ? quality[id] : "1";
+
+                                let tempObj = {
+                                  id: id + "quality" + qual,
+                                  quality: qual,
+                                  name: obj.name + " " + qual,
+                                  price: price,
+                                  productImage: obj.productImage
+                                };
+
+                                addCart(tempObj);
+                              }}>
+
+                                <CardMedia
+                                  component="img"
+                                  alt="Ovqat"
+                                  height={200}
+                                  image={obj.productImage === "null" || !obj.productImage
                                     ? placeholder
-                                    : "http://localhost:4000/" + obj.productImage
-                                }
-                              />
-
-                              <div>
-                                <p className="firstName">{obj.name}</p>
-                                <CurrencyFormat
-                                  value={pricer[id] ? eval(pricer[id]) : obj.price}
-                                  displayType={"text"}
-                                  suffix=" sum"
-                                  thousandSeparator={true}
-                                  renderText={(value) => (
-                                    <p className="secondName ">{value} </p>
-                                  )}
+                                    : "http://localhost:4000/" + obj.productImage}
                                 />
+                                <CardContent>
+                                  <Typography gutterBottom variant="h6" component="h3">
+                                    {obj.name}
+                                  </Typography>
+                                  <CurrencyFormat
+                                    value={pricer[id] ? eval(pricer[id]) : obj.price}
+                                    displayType={"text"}
+                                    suffix=" sum"
+                                    thousandSeparator={true}
+                                    renderText={(value) => (
+                                      <p className="secondName" style={{ marginTop: "1px" }}>{value} </p>
+                                    )}
+                                  />
+
+                                  <Typography variant="body2" color="textSecondary" component="p">
+                                    Qoshish uchun ustiga bosin
+                                  </Typography>
+                                </CardContent>
+
+                              </CardActionArea>
+                              <CardActions>
                                 <Radio.Group defaultValue="obj.price" size="medium">
                                   <Radio.Button
                                     onClick={(e) => handleChange(e, "1", id)}
@@ -111,35 +137,57 @@ function Content({ data, loading }) {
                                     0.7
                                   </Radio.Button>
                                 </Radio.Group>
-                              </div>
+                                {/* <motion.button
+                                  className="pplus"
+                                  onClick={() => {
+                                    let temprice = pricer[id] ? pricer[id] : "obj.price";
+                                    let price = eval(temprice);
+                                    let qual = quality[id] ? quality[id] : "1";
 
-                              <motion.button
-                                whileTap={{ scale: 1.1 }}
-                                className="pplus"
-                                onClick={() => {
-                                  let temprice = pricer[id] ? pricer[id] : "obj.price";
-                                  let price = eval(temprice);
-                                  let qual = quality[id] ? quality[id] : "1";
+                                    let tempObj = {
+                                      id: id + "quality" + qual,
+                                      quality: qual,
+                                      name: obj.name + " " + qual,
+                                      price: price,
+                                      productImage: obj.productImage
+                                    };
 
-                                  let tempObj = {
-                                    id: id + "quality" + qual,
-                                    quality: qual,
-                                    name: obj.name + " " + qual,
-                                    price: price,
-                                    productImage: obj.productImage
-                                  };
-                                  addCart(tempObj);
-                                }}
-                              >
-                                <AddIcon fontSize="small" />
-                              </motion.button>
-                            </motion.div>
-                          </div>
-                        </Grid>
-                      ))}
-                  </Grid>
+                                    addCart(tempObj);
+                                  }}
+                                >
+
+                                  <AddIcon />
+                                </motion.button> */}
+                              </CardActions>
+
+                            </Card>
+                          </Grid>
+                          // <Grid item xs={12} sm={12} md={6} lg={4}>
+                          //   <div>
+
+
+                          //     <LazyLoad height={65}>
+                          //       <motion.div key={obj.id} className="products">
+
+                          //       
+
+                          //         <div>
+                          //           <p className="firstName">{obj.name}</p>
+
+                          //         </div>
+
+
+                          //       </motion.div>
+                          //     </LazyLoad>
+
+                          //   </div>
+                          // </Grid>
+                        ))}
+                    </Grid>
+                  </div>
                 </div>
-              </div>
+              </LazyLoad>
+
             </TabPane>
 
           ))}
