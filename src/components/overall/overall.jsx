@@ -29,14 +29,15 @@ const useStyles = makeStyles({
 function Overall() {
   let history = useHistory();
   const classes = useStyles();
+  const input = localStorage.getItem("table");
 
-  const socket = io("http://192.168.43.2:4000");
+  const socket = io("http://localhost:4000");
   const [service, setService] = useState([]);
   const [data, setData] = useState([]);
   const [table, setsingleTable] = useState([false]);
-  const [inputValue, setInputValue] = useState(1);
+  const [inputValue, setInputValue] = useState(parseInt(input));
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [inputValues, setInputValues] = useState("");
+  const [inputValues, setInputValues] = useState(input);
   const [isIncorrect, setIncorrect] = useState(false);
   const [anim, setAnim] = useState(0);
   const [value, setValue] = useState();
@@ -48,17 +49,65 @@ function Overall() {
   useEffect(() => {
     socket.on("recieve-order", (message) => {
       (async function () {
-        const { data } = await axios.get("http://192.168.43.2:4000/orders");
+        const { data } = await axios.get("http://localhost:4000/orders");
         setData(data);
       })();
     });
     (async function () {
-      const { data } = await axios.get("http://192.168.43.2:4000/orders");
+      const { data } = await axios.get("http://localhost:4000/orders");
       const { data: servicee } = await axios.get(
-        "http://192.168.43.2:4000/service"
+        "http://localhost:4000/service"
       );
       setService(servicee);
       setData(data);
+      if (data) {
+        let allOrders = {};
+        let allOrdersFromSingleTable = data
+          .filter((obj) => {
+            return obj.table === inputValue
+          })
+          .reduce((acc, obj) => {
+            acc.table = obj.table;
+            acc.foods = [];
+
+            acc.id = obj._id;
+            if (!acc.money) {
+              acc.money = obj.money;
+            } else {
+              acc.money = acc.money + obj.money;
+            }
+
+            obj.foods.forEach((foodObj) => {
+              if (!allOrders[foodObj.name]) {
+                allOrders[foodObj.name] = {
+                  q: foodObj.quantity,
+                  price: foodObj.price,
+                  allPrice: foodObj.price * foodObj.quantity,
+                };
+              } else {
+                allOrders[foodObj.name].q =
+                  allOrders[foodObj.name].q + foodObj.quantity;
+                allOrders[foodObj.name].price =
+                  allOrders[foodObj.name].price + foodObj.price;
+                allOrders[foodObj.name].allpPrice =
+                  allOrders[foodObj.name].allpPrice +
+                  foodObj.price * foodObj.quantity;
+              }
+            });
+            return acc;
+          }, {});
+        allOrders = Object.entries(allOrders).map(([key, value]) => {
+          return {
+            name: key,
+            quantity: value.q,
+            price: value.price,
+            allprice: value.allPrice,
+          };
+        });
+        allOrdersFromSingleTable.foods = allOrders;
+        // allOrdersFromSingleTable is what u should print
+        setsingleTable([allOrdersFromSingleTable]);
+      }
     })();
   }, []);
   const columns = [
@@ -111,10 +160,13 @@ function Overall() {
     },
   ];
 
+
   function filterTables() {
     let allOrders = {};
     let allOrdersFromSingleTable = data
-      .filter((obj) => obj.table === inputValue)
+      .filter((obj) => {
+        return obj.table === inputValue
+      })
       .reduce((acc, obj) => {
         acc.table = obj.table;
         acc.foods = [];
@@ -134,12 +186,12 @@ function Overall() {
               allPrice: foodObj.price * foodObj.quantity,
             };
           } else {
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.q] + foodObj.quantity;
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.price] + foodObj.price;
-            allOrders[foodObj.name] =
-              allOrders[foodObj.name.allpPrice] +
+            allOrders[foodObj.name].q =
+              allOrders[foodObj.name].q + foodObj.quantity;
+            allOrders[foodObj.name].price =
+              allOrders[foodObj.name].price + foodObj.price;
+            allOrders[foodObj.name].allpPrice =
+              allOrders[foodObj.name].allpPrice +
               foodObj.price * foodObj.quantity;
           }
         });
@@ -157,7 +209,6 @@ function Overall() {
     // allOrdersFromSingleTable is what u should print
     setsingleTable([allOrdersFromSingleTable]);
   }
-
   const password = "admin2020";
   const deleteObj = (id) => {
     if (inputValues === password) {
@@ -199,7 +250,8 @@ function Overall() {
           <div style={{ display: "flex", gap: "10px" }}>
             <p style={{ fontSize: "16px" }}>Stol raqami: </p>
             <InputNumber
-              placeholder="1"
+              placeholder={input}
+              defaultValue={input}
               type="number"
               size="small"
               style={{ height: "25px", width: "50px" }}

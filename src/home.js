@@ -51,12 +51,16 @@ function Home() {
 
   const [count, setCount] = useState(totalItems);
   let history = useHistory();
+
   useEffect(() => {
     setLoading(true);
+    const query = new URLSearchParams(window.location.search);
+    const token = query.get("table");
+    sessionStorage.setItem("table", token);
     setTimeout(() => {
       (async function () {
         axios
-          .get("http://192.168.1.104:4000/data")
+          .get("http://localhost:4000/data")
           .then((res) => {
             setData(res.data);
             setLoading(false);
@@ -75,7 +79,6 @@ function Home() {
         style={{ marginTop: "200px" }}
       />
     );
-  console.log(count);
   return (
     <div className="App">
       <CartProvider
@@ -93,12 +96,12 @@ function Home() {
           {/* <Grid item xs={12} lg={12} sm={12}>
             <Search loading={loading} data={data} />
           </Grid> */}
-          <Grid item xs={12} md={8} lg={8} sm={6}>
+          <Grid item xs={12} md={7} lg={8} sm={6}>
             <LazyLoad once={true}>
               <Content loading={loading} data={data} />
             </LazyLoad>
           </Grid>
-          <Grid item xs={12} md={4} lg={4} sm={6}>
+          <Grid item xs={12} md={5} lg={4} sm={6}>
             {isMobileOnly ? null : <Check />}
           </Grid>
         </Grid>

@@ -24,25 +24,25 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
     function onDismiss() {
         foobar(false);
     }
-    const socket = io("http://192.168.43.2:4000");
+    const socket = io("http://localhost:4000");
 
     const success = () => {
     };
     //Refs and states
     const [anim, setAnim] = useState(0);
-    const [input, setInput] = useState(0);
+    const input = sessionStorage.getItem("table");
 
 
     //Tracking click of end order vutton
     const handleCLicker = () => {
         if (isEmpty === false) {
-            if (input) {
+            if (input !== "null" || null) {
                 setAnim(1600);
                 setTimeout(function () {
                     afterEmtyping()
                 }, 1000);
             } else if (input === 0) {
-                message.error("Stolni raqamini kiritng");
+                message.error("QR CODNI QAYTA SKANER QILISNG");
             }
         }
     };
@@ -159,36 +159,6 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                         <div className="par">
 
                             <div className='paragraph'>
-                                <div className="table">
-                                    <h1
-                                        style={{
-                                            margin: "auto",
-                                            fontSize: "22px",
-                                            paddingRight: "11px",
-                                        }}
-                                    >
-                                        Stol raqami{" "}
-                                    </h1>
-
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        max="100"
-                                        value={input}
-                                        style={{
-                                            width: "30px",
-                                            height: "30px",
-                                            margin: "auto",
-                                            fontSize: "20px",
-                                            borderRadius: "5px",
-                                            boxShadow: " 2px 2px 5px 4px rgba(0, 0, 0, 0.25)",
-                                            border: 0,
-                                        }}
-                                        onChange={(e) => setInput(e.target.value)}
-                                    />
-                                    <br />
-
-                                </div>
 
                             </div>
                             <motion.button

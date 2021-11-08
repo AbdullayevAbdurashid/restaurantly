@@ -12,6 +12,14 @@ import Grid from '@material-ui/core/Grid';
 import CurrencyFormat from "react-currency-format";
 import { Image, Tabs } from "antd";
 import LazyLoad from 'react-lazyload';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 function Content({ data, loading }) {
 
@@ -20,7 +28,7 @@ function Content({ data, loading }) {
   const [quality, setQuality] = useState({});
   const [pricer, setPrice] = useState({});
   const { addItem } = useCart();
-  const height = window.innerHeight + 155 + "px";
+  const height = window.innerHeight + 55 + "px";
   let keys = Object.keys(data);
 
   const addCart = (obj) => {
@@ -51,89 +59,129 @@ function Content({ data, loading }) {
 
                 <div>
 
-                  <div key={indx} style={{ height: height }} className="mywrapper" >
-                    <Grid container spacing={1}  >
+                  <div key={indx} style={{ height: height, padding: "10px", marginBottom: "70PX" }} className="mywrapper" >
+                    <Grid container spacing={2}  >
 
                       {data &&
                         data[key].map(({ _id: id, ...obj }, index) => (
-                          <Grid item xs={12} sm={12} md={6} lg={4}>
-                            <div>
+                          <Grid item xs={6} sm={6} md={3} lg={3}
 
+                          >
+                            <Card
+                            >
+                              <CardActionArea onClick={() => {
+                                let temprice = pricer[id] ? pricer[id] : "obj.price";
+                                let price = eval(temprice);
+                                let qual = quality[id] ? quality[id] : "1";
 
-                              <LazyLoad height={65}>
-                                <motion.div key={obj.id} className="products">
+                                let tempObj = {
+                                  id: id + "quality" + qual,
+                                  quality: qual,
+                                  name: obj.name + " " + qual,
+                                  price: price,
+                                  productImage: obj.productImage
+                                };
 
-                                  <Image
-                                    style={{ borderRadius: "15px", marginTop: "10px" }}
-                                    width={87}
-                                    src={
-                                      obj.productImage === "null" || !obj.productImage
-                                        ? placeholder
-                                        : "http://192.168.1.104:4000/" + obj.productImage
-                                    }
+                                addCart(tempObj);
+                              }}>
+
+                                <CardMedia
+                                  component="img"
+                                  alt="Ovqat"
+                                  height={200}
+                                  image={obj.productImage === "null" || !obj.productImage
+                                    ? placeholder
+                                    : "http://localhost:4000/" + obj.productImage}
+                                />
+                                <CardContent>
+                                  <Typography gutterBottom variant="h6" component="h3">
+                                    {obj.name}
+                                  </Typography>
+                                  <CurrencyFormat
+                                    value={pricer[id] ? eval(pricer[id]) : obj.price}
+                                    displayType={"text"}
+                                    suffix=" sum"
+                                    thousandSeparator={true}
+                                    renderText={(value) => (
+                                      <p className="secondName" style={{ marginTop: "1px" }}>{value} </p>
+                                    )}
                                   />
 
-                                  <div>
-                                    <p className="firstName">{obj.name}</p>
-                                    <CurrencyFormat
-                                      value={pricer[id] ? eval(pricer[id]) : obj.price}
-                                      displayType={"text"}
-                                      suffix=" sum"
-                                      thousandSeparator={true}
-                                      renderText={(value) => (
-                                        <p className="secondName ">{value} </p>
-                                      )}
-                                    />
-                                    <Radio.Group defaultValue="obj.price" size="medium">
-                                      <Radio.Button
-                                        onClick={(e) => handleChange(e, "1", id)}
-                                        disabled={obj.price ? false : true}
-                                        value="obj.price"
-                                      >
-                                        1.0
-                                      </Radio.Button>
-                                      <Radio.Button
-                                        disabled={obj.price05 ? false : true}
-                                        onClick={(e) => handleChange(e, "0.5", id)}
-                                        value="obj.price05"
-                                      >
-                                        0.5
-                                      </Radio.Button>
-                                      <Radio.Button
-                                        disabled={obj.price07 ? false : true}
-                                        onClick={(e) => handleChange(e, "0.7", id)}
-                                        value="obj.price07"
-                                      >
-                                        0.7
-                                      </Radio.Button>
-                                    </Radio.Group>
-                                  </div>
+                                  <Typography variant="body2" color="textSecondary" component="p">
+                                    Qoshish uchun ustiga bosin
+                                  </Typography>
+                                </CardContent>
 
-                                  <motion.button
-                                    className="pplus"
-                                    onClick={() => {
-                                      let temprice = pricer[id] ? pricer[id] : "obj.price";
-                                      let price = eval(temprice);
-                                      let qual = quality[id] ? quality[id] : "1";
-
-                                      let tempObj = {
-                                        id: id + "quality" + qual,
-                                        quality: qual,
-                                        name: obj.name + " " + qual,
-                                        price: price,
-                                        productImage: obj.productImage
-                                      };
-
-                                      addCart(tempObj);
-                                    }}
+                              </CardActionArea>
+                              <CardActions>
+                                <Radio.Group defaultValue="obj.price" size="medium">
+                                  <Radio.Button
+                                    onClick={(e) => handleChange(e, "1", id)}
+                                    disabled={obj.price ? false : true}
+                                    value="obj.price"
                                   >
-                                    <AddIcon />
-                                  </motion.button>
-                                </motion.div>
-                              </LazyLoad>
+                                    1.0
+                                  </Radio.Button>
+                                  <Radio.Button
+                                    disabled={obj.price05 ? false : true}
+                                    onClick={(e) => handleChange(e, "0.5", id)}
+                                    value="obj.price05"
+                                  >
+                                    0.5
+                                  </Radio.Button>
+                                  <Radio.Button
+                                    disabled={obj.price07 ? false : true}
+                                    onClick={(e) => handleChange(e, "0.7", id)}
+                                    value="obj.price07"
+                                  >
+                                    0.7
+                                  </Radio.Button>
+                                </Radio.Group>
+                                {/* <motion.button
+                                  className="pplus"
+                                  onClick={() => {
+                                    let temprice = pricer[id] ? pricer[id] : "obj.price";
+                                    let price = eval(temprice);
+                                    let qual = quality[id] ? quality[id] : "1";
 
-                            </div>
+                                    let tempObj = {
+                                      id: id + "quality" + qual,
+                                      quality: qual,
+                                      name: obj.name + " " + qual,
+                                      price: price,
+                                      productImage: obj.productImage
+                                    };
+
+                                    addCart(tempObj);
+                                  }}
+                                >
+
+                                  <AddIcon />
+                                </motion.button> */}
+                              </CardActions>
+
+                            </Card>
                           </Grid>
+                          // <Grid item xs={12} sm={12} md={6} lg={4}>
+                          //   <div>
+
+
+                          //     <LazyLoad height={65}>
+                          //       <motion.div key={obj.id} className="products">
+
+                          //       
+
+                          //         <div>
+                          //           <p className="firstName">{obj.name}</p>
+
+                          //         </div>
+
+
+                          //       </motion.div>
+                          //     </LazyLoad>
+
+                          //   </div>
+                          // </Grid>
                         ))}
                     </Grid>
                   </div>

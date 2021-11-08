@@ -14,8 +14,9 @@ import { Modal } from "antd";
 import PlaylistAddCheckOutlinedIcon from '@material-ui/icons/PlaylistAddCheckOutlined';
 import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
+import { message } from "antd";
 
-const socket = io("http://192.168.43.2:4000");
+const socket = io("http://localhost:4000");
 function Check() {
   const {
     isEmpty,
@@ -27,12 +28,13 @@ function Check() {
 
   //Refs and states
   const [anim, setAnim] = useState(0);
-  const [input, setInput] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
     setIsModalVisible(true);
   };
+  const input = sessionStorage.getItem("table");
+
   //Sending data to server to orders page
   const setPosst = () => {
     socket.emit("post-order", {
@@ -47,7 +49,7 @@ function Check() {
   const setPost = () => {
     axios({
       method: "post",
-      url: "http://192.168.1.2:4000/status",
+      url: "http://localhost:4000/status",
       data: {
         date: date,
         money: cartTotal,
@@ -57,7 +59,7 @@ function Check() {
   //Tracking click of end order vutton
   const handleCLicker = () => {
     if (isEmpty === false) {
-      if (input) {
+      if (input !== "null" || null) {
         setAnim(1600);
         setTimeout(function () {
           setPosst();
@@ -66,12 +68,11 @@ function Check() {
           setAnim(0); // runs second
           setIsModalVisible(false);
         }, 1000);
-      } else if (input === 0) {
-        alert("Stolni raqamini kiritng");
+      } else {
+        message.error("QR CODNI QAYTA SKANER QILISNG");
       }
     }
   };
-
   //Emty cart animation
   const cartEmpty = () => {
     setAnim(1600);
@@ -193,36 +194,7 @@ function Check() {
           </div>
 
           {/* Button stuff */}
-          <div className="table">
-            <p
-              style={{
-                margin: "auto",
-                fontSize: "22px",
-                paddingRight: "30px",
-              }}
-            >
 
-              Stol raqami{" "}
-            </p>
-
-            <input
-              type="number"
-              min="0"
-              max="100"
-              value={input}
-              style={{
-                width: "75px",
-                height: "35px",
-                margin: "auto",
-                fontSize: "20px",
-                borderRadius: "5px",
-                boxShadow: " 2px 2px 5px 4px rgba(0, 0, 0, 0.25)",
-                border: 0,
-              }}
-              onChange={(e) => setInput(e.target.value)}
-            />
-            <br />
-          </div>
           <div className="p">
             <div className='p'>
               <h3 style={{
