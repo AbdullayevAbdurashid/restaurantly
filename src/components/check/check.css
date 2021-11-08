@@ -87,6 +87,12 @@ li {
   cursor: pointer;
   font-size: 16px;
 }
+.pplus {
+  transition: 0.5s;
+}
+.pplus:active {
+  transform: scale(2.7);
+}
 .p {
   display: flex;
   flex-direction: column;

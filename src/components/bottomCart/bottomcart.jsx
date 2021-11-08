@@ -64,6 +64,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
         emptyCart(); // runs first
         setAnim(0); // runs second
         message.success('Buyurtmangiz jonatildi');
+        window.location.reload();
 
     }
     //Emty cart animation
@@ -71,6 +72,8 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
         setAnim(1600);
         setTimeout(function () {
             emptyCart(); // runs first
+            window.location.reload();
+
             setAnim(0); // runs second
         }, 1000);
     };
@@ -244,7 +247,6 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                                             </div>
                                             <div className="productss">
                                                 <motion.button
-                                                    whileTap={{ scale: 1.1 }}
                                                     className="pplus"
                                                     onClick={() =>
                                                         updateItemQuantity(item.id, item.quantity + 1)

@@ -11,6 +11,7 @@ import { useCart } from "react-use-cart";
 import Grid from '@material-ui/core/Grid';
 import CurrencyFormat from "react-currency-format";
 import { Image, Tabs } from "antd";
+import LazyLoad from 'react-lazyload';
 
 function Content({ data, loading }) {
 
@@ -46,93 +47,99 @@ function Content({ data, loading }) {
         {keys &&
           keys.map((key, indx) => (
             <TabPane tab={key} key={indx}>
-              <div>
+              <LazyLoad once={true}>
 
-                <div key={indx} style={{ height: height }} className="mywrapper" >
-                  <Grid container spacing={1}  >
+                <div>
 
-                    {data &&
-                      data[key].map(({ _id: id, ...obj }, index) => (
-                        <Grid item xs={12} sm={12} md={6} lg={4}>
-                          <div>
+                  <div key={indx} style={{ height: height }} className="mywrapper" >
+                    <Grid container spacing={1}  >
+
+                      {data &&
+                        data[key].map(({ _id: id, ...obj }, index) => (
+                          <Grid item xs={12} sm={12} md={6} lg={4}>
+                            <div>
 
 
-                            <motion.div key={obj.id} className="products">
-                              <Image
-                                style={{ borderRadius: "15px", marginTop: "10px" }}
-                                width={87}
-                                height={65}
-                                src={
-                                  obj.productImage === "null" || !obj.productImage
-                                    ? placeholder
-                                    : "http://192.168.43.2:4000/" + obj.productImage
-                                }
-                              />
+                              <LazyLoad height={65}>
+                                <motion.div key={obj.id} className="products">
 
-                              <div>
-                                <p className="firstName">{obj.name}</p>
-                                <CurrencyFormat
-                                  value={pricer[id] ? eval(pricer[id]) : obj.price}
-                                  displayType={"text"}
-                                  suffix=" sum"
-                                  thousandSeparator={true}
-                                  renderText={(value) => (
-                                    <p className="secondName ">{value} </p>
-                                  )}
-                                />
-                                <Radio.Group defaultValue="obj.price" size="medium">
-                                  <Radio.Button
-                                    onClick={(e) => handleChange(e, "1", id)}
-                                    disabled={obj.price ? false : true}
-                                    value="obj.price"
+                                  <Image
+                                    style={{ borderRadius: "15px", marginTop: "10px" }}
+                                    width={87}
+                                    src={
+                                      obj.productImage === "null" || !obj.productImage
+                                        ? placeholder
+                                        : "http://192.168.1.104:4000/" + obj.productImage
+                                    }
+                                  />
+
+                                  <div>
+                                    <p className="firstName">{obj.name}</p>
+                                    <CurrencyFormat
+                                      value={pricer[id] ? eval(pricer[id]) : obj.price}
+                                      displayType={"text"}
+                                      suffix=" sum"
+                                      thousandSeparator={true}
+                                      renderText={(value) => (
+                                        <p className="secondName ">{value} </p>
+                                      )}
+                                    />
+                                    <Radio.Group defaultValue="obj.price" size="medium">
+                                      <Radio.Button
+                                        onClick={(e) => handleChange(e, "1", id)}
+                                        disabled={obj.price ? false : true}
+                                        value="obj.price"
+                                      >
+                                        1.0
+                                      </Radio.Button>
+                                      <Radio.Button
+                                        disabled={obj.price05 ? false : true}
+                                        onClick={(e) => handleChange(e, "0.5", id)}
+                                        value="obj.price05"
+                                      >
+                                        0.5
+                                      </Radio.Button>
+                                      <Radio.Button
+                                        disabled={obj.price07 ? false : true}
+                                        onClick={(e) => handleChange(e, "0.7", id)}
+                                        value="obj.price07"
+                                      >
+                                        0.7
+                                      </Radio.Button>
+                                    </Radio.Group>
+                                  </div>
+
+                                  <motion.button
+                                    className="pplus"
+                                    onClick={() => {
+                                      let temprice = pricer[id] ? pricer[id] : "obj.price";
+                                      let price = eval(temprice);
+                                      let qual = quality[id] ? quality[id] : "1";
+
+                                      let tempObj = {
+                                        id: id + "quality" + qual,
+                                        quality: qual,
+                                        name: obj.name + " " + qual,
+                                        price: price,
+                                        productImage: obj.productImage
+                                      };
+
+                                      addCart(tempObj);
+                                    }}
                                   >
-                                    1.0
-                                  </Radio.Button>
-                                  <Radio.Button
-                                    disabled={obj.price05 ? false : true}
-                                    onClick={(e) => handleChange(e, "0.5", id)}
-                                    value="obj.price05"
-                                  >
-                                    0.5
-                                  </Radio.Button>
-                                  <Radio.Button
-                                    disabled={obj.price07 ? false : true}
-                                    onClick={(e) => handleChange(e, "0.7", id)}
-                                    value="obj.price07"
-                                  >
-                                    0.7
-                                  </Radio.Button>
-                                </Radio.Group>
-                              </div>
+                                    <AddIcon />
+                                  </motion.button>
+                                </motion.div>
+                              </LazyLoad>
 
-                              <motion.button
-                                whileTap={{ scale: 1.3 }}
-                                className="pplus"
-                                onClick={() => {
-                                  let temprice = pricer[id] ? pricer[id] : "obj.price";
-                                  let price = eval(temprice);
-                                  let qual = quality[id] ? quality[id] : "1";
-
-                                  let tempObj = {
-                                    id: id + "quality" + qual,
-                                    quality: qual,
-                                    name: obj.name + " " + qual,
-                                    price: price,
-                                    productImage: obj.productImage
-                                  };
-
-                                  addCart(tempObj);
-                                }}
-                              >
-                                <AddIcon fontSize="large" />
-                              </motion.button>
-                            </motion.div>
-                          </div>
-                        </Grid>
-                      ))}
-                  </Grid>
+                            </div>
+                          </Grid>
+                        ))}
+                    </Grid>
+                  </div>
                 </div>
-              </div>
+              </LazyLoad>
+
             </TabPane>
 
           ))}

@@ -168,7 +168,7 @@ function Check() {
                   </div>
                   <div className="productss">
                     <motion.button
-                      whileTap={{ scale: 1.1 }}
+                      whileTap={{ scale: 2.1 }}
                       className="pplus"
                       onClick={() =>
                         updateItemQuantity(item.id, item.quantity + 1)

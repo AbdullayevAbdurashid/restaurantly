@@ -16,6 +16,10 @@
 .ant-tabs {
   width: 100%;
 }
+button:hover,
+button:focus {
+  outline: none;
+}
 .mywrapper {
   overflow: auto;
   margin: 0, 30px;
