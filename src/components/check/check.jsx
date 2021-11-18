@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { message } from "antd";
 
-const socket = io("http://localhost:4000");
+const socket = io("http://192.168.1.2:4000");
 function Check() {
   const {
     isEmpty,
@@ -49,7 +49,7 @@ function Check() {
   const setPost = () => {
     axios({
       method: "post",
-      url: "http://localhost:4000/status",
+      url: "http://192.168.1.2:4000/status",
       data: {
         date: date,
         money: cartTotal,

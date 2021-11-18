@@ -31,7 +31,7 @@ function Overall() {
   const classes = useStyles();
   const input = localStorage.getItem("table");
 
-  const socket = io("http://localhost:4000");
+  const socket = io("http://192.168.1.2:4000");
   const [service, setService] = useState([]);
   const [data, setData] = useState([]);
   const [table, setsingleTable] = useState([false]);
@@ -49,14 +49,14 @@ function Overall() {
   useEffect(() => {
     socket.on("recieve-order", (message) => {
       (async function () {
-        const { data } = await axios.get("http://localhost:4000/orders");
+        const { data } = await axios.get("http://192.168.1.2:4000/orders");
         setData(data);
       })();
     });
     (async function () {
-      const { data } = await axios.get("http://localhost:4000/orders");
+      const { data } = await axios.get("http://192.168.1.2:4000/orders");
       const { data: servicee } = await axios.get(
-        "http://localhost:4000/service"
+        "http://192.168.1.2:4000/service"
       );
       setService(servicee);
       setData(data);

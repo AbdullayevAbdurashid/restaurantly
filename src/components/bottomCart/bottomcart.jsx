@@ -24,7 +24,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
     function onDismiss() {
         foobar(false);
     }
-    const socket = io("http://localhost:4000");
+    const socket = io("http://192.168.1.2:4000");
 
     const success = () => {
     };
@@ -55,7 +55,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
         });
         axios({
             method: "post",
-            url: "http://localhost:4000/status",
+            url: "http://192.168.1.2:4000/status",
             data: {
                 date: date,
                 money: cartTotal,

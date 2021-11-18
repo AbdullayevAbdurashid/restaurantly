@@ -91,7 +91,7 @@ function Content({ data, loading }) {
                                   height={200}
                                   image={obj.productImage === "null" || !obj.productImage
                                     ? placeholder
-                                    : "http://localhost:4000/" + obj.productImage}
+                                    : "http://192.168.1.2:4000/" + obj.productImage}
                                 />
                                 <CardContent>
                                   <Typography gutterBottom variant="h6" component="h3">

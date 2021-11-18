@@ -60,7 +60,7 @@ function Home() {
     setTimeout(() => {
       (async function () {
         axios
-          .get("http://localhost:4000/data")
+          .get("http://192.168.1.2:4000/data")
           .then((res) => {
             setData(res.data);
             setLoading(false);
