@@ -12,8 +12,11 @@ import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import { isMobile } from "react-device-detect";
 import HomeIcon from "@material-ui/icons/Home";
 import { makeStyles } from "@material-ui/core/styles";
-
 import { useHistory } from "react-router-dom";
+
+const ip = "http://localhost:4000"
+const socket = io(ip);
+
 const useStyles = makeStyles({
   stickToBottom: {
     zIndex: "2",
@@ -29,9 +32,8 @@ const useStyles = makeStyles({
 function Overall() {
   let history = useHistory();
   const classes = useStyles();
-  const input = localStorage.getItem("table");
+  const input = sessionStorage.getItem("table");
 
-  const socket = io("http://localhost:4000");
   const [service, setService] = useState([]);
   const [data, setData] = useState([]);
   const [table, setsingleTable] = useState([false]);
@@ -49,14 +51,14 @@ function Overall() {
   useEffect(() => {
     socket.on("recieve-order", (message) => {
       (async function () {
-        const { data } = await axios.get("http://localhost:4000/orders");
+        const { data } = await axios.get(`${ip}/orders`);
         setData(data);
       })();
     });
     (async function () {
-      const { data } = await axios.get("http://localhost:4000/orders");
+      const { data } = await axios.get(`${ip}/orders`);
       const { data: servicee } = await axios.get(
-        "http://localhost:4000/service"
+        `${ip}/service`
       );
       setService(servicee);
       setData(data);

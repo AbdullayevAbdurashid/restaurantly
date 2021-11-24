@@ -62,18 +62,24 @@ li {
   border: 2px solid rgb(122, 23, 179);
   background-color: transparent;
 }
-
+.MuiGrid-container {
+  justify-content: center;
+}
 .firstName {
   margin-top: 5px;
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 15px;
+  font-size: 0.9rem;
 }
 .secondName {
+  font-size: inherit !important;
   margin-top: -20px;
   color: #1948f0;
 }
-
+.quan {
+  font-size: 1rem;
+  font-weight: 400;
+}
 .plu {
   background-image: linear-gradient(94.21deg, #60df40 -4.66%, #0dc3ce 93.91%);
   box-shadow: 0px -1px 35px -1px rgba(24, 171, 138, 0.37);
@@ -87,11 +93,8 @@ li {
   cursor: pointer;
   font-size: 16px;
 }
-.pplus {
-  transition: 0.5s;
-}
-.pplus:active {
-  transform: scale(2.7);
+.MuiDrawer-paperAnchorBottom {
+  height: 86% !important;
 }
 .p {
   display: flex;
@@ -100,6 +103,11 @@ li {
   margin-bottom: 30px;
   margin-top: auto;
   position: relative;
+}
+.fixed {
+  right: 0;
+  position: fixed;
+  bottom: 0;
 }
 .pl {
   background-image: linear-gradient(94.21deg, #fc8e3e -4.66%, #c20fa6 93.91%);
@@ -115,4 +123,41 @@ li {
   overflow: auto;
   height: 600px;
   padding: 10px;
+}
+.waiters.ant-form-item-required {
+  color: white !important;
+  margin-bottom: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 500;
+  font-size: 16px !important;
+}
+.waiters .ant-tabs-tab-btn {
+  color: white;
+  font-size: 1.1rem;
+}
+.ant-checkbox-wrapper {
+  color: white !important;
+  font-size: 16px;
+}
+
+.waiters .MuiCard-root {
+  background: radial-gradient(
+    circle,
+    rgba(64, 143, 133, 1) 0%,
+    rgba(14, 69, 109, 1) 55%,
+    rgba(7, 23, 77, 1) 100%
+  );
+
+  color: white;
+  background: rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%) !important;
+  backdrop-filter: blur(25px) saturate(175%);
+  -webkit-backdrop-filter: blur(25px) saturate(175%);
+  background-color: rgba(15, 24, 59, 0.877) !important;
+  border-radius: 12px;
+  padding: 0px;
+  border: 2px solid rgba(18, 58, 218, 0.877) !important;
+}
+.waiters .MuiCardContent-root {
+  padding: 8px;
 }
