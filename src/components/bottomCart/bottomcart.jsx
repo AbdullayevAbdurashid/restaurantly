@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import 'react-spring-bottom-sheet/dist/style.css'
-import { BottomSheet } from "react-spring-bottom-sheet";
 import { useCart } from "react-use-cart";
 import { motion } from "framer-motion";
 import "../check/check.css";
@@ -12,7 +11,14 @@ import { message } from "antd";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Container from "@material-ui/core/Container";
-function Bottomcart({ opens: isOpen, func: foobar }) {
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import Divider from '@material-ui/core/Divider';
+
+const socket = io("http://localhost:4000");
+
+
+function Bottomcart({ opens: isOpen, func: foobar, socket: sock, ip: add }) {
+    const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
     const {
         isEmpty,
@@ -24,10 +30,12 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
     function onDismiss() {
         foobar(false);
     }
+<<<<<<< HEAD
     const socket = io("http://192.168.1.2:4000");
+=======
+>>>>>>> d5b88f4e98cfee48c8f11e55f59074f4e02762e7
 
-    const success = () => {
-    };
+    ;
     //Refs and states
     const [anim, setAnim] = useState(0);
     const input = sessionStorage.getItem("table");
@@ -41,7 +49,7 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                 setTimeout(function () {
                     afterEmtyping()
                 }, 1000);
-            } else if (input === 0) {
+            } else {
                 message.error("QR CODNI QAYTA SKANER QILING!");
             }
         }
@@ -90,109 +98,75 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
 
     return (
         <div>
-            <BottomSheet
+            <SwipeableDrawer
+                anchor="bottom"
+                width={200}
                 open={isOpen}
-                onDismiss={onDismiss}
-                blocking={false}
-
-                defaultSnap={({ maxHeight }) => maxHeight / 2}
-                snapPoints={({ maxHeight }) => [
-                    maxHeight - maxHeight / 10,
-                ]}
-                header={
-                    <div style={{ display: "flex" }}>
-
-                        <div style={{
-                            display: "flex", flexDirection: "row",
-                            width: "100%",
-                            height: "30px",
-                            marginLeft: "auto",
-                            marginTop: "auto",
-                            marginBottom: "5px",
-                        }}>     <h3 style={{
-                            color: "black", fontSize: "24px",
-                        }}>
-                                {" "}
-                                Summa:
-                                <CurrencyFormat
-                                    value={cartTotal}
-                                    displayType={"text"}
-                                    suffix=" sum"
-                                    thousandSeparator={true}
-                                    renderText={(value) => (
-                                        <span style={{ color: "#187CDF", fontSize: "22px" }}>
-                                            {value}
-                                        </span>
-                                    )}
-                                />
-                            </h3>
-                            <motion.div
-                                onClick={() => cartEmpty()}
-                                whileTap={{ scale: 1.1 }}
-                                style={{
-                                    fontSize: "14px",
-                                    width: "80px",
-                                    height: "30px",
-                                    marginLeft: "auto",
-                                    marginTop: "auto",
-                                    marginBottom: "5px",
-                                }}
-                            >
-                                <DeleteIcon
-                                    style={{
-                                        color: "#d60505",
-                                        fontSize: "14px",
-                                        width: "100px",
-                                        height: "40px",
-                                        marginLeft: "auto",
-                                        marginBottom: "0px",
-                                    }}
-                                />
-                            </motion.div>
-                        </div>
-                    </div>
-
-
-                }
-                footer={
-                    <div>
-                        <div className="par">
-
-                            <div className='paragraph'>
-
-                            </div>
-                            <motion.button
-                                whileTap={{ scale: 1.1 }}
-                                className="pl"
-                                onClick={handleCLicker}
-                            >
-                                Jonatish{" "}
-                            </motion.button>
-
-
-                        </div>
-
-
-                    </div>
-                }
+                onClose={onDismiss}
+                disableBackdropTransition={!iOS} disableDiscovery={iOS}
             >
+                <Container maxWidth="sm">
 
-                <Container>
-
-                    <motion.div
+                    <div
                         initial={{ x: 360 }}
                         animate={{ x: 0 }}
                         transition={{ type: "tween", stiffness: 50, duration: 0.5 }}
-                        style={{ marginTop: "20px" }}
+                        style={{ marginTop: "20px", padding: "10px" }}
                     >
-                        <motion.div className="mywrapperr" style={{ height: height }}>
+                        <div style={{ display: "flex", top: 0, right: 0, }}>
 
+                            <div style={{
+                                display: "flex", flexDirection: "row",
+                                width: "100%",
+                                height: "30px",
+                                marginLeft: "auto",
+                                marginTop: "auto",
+                                marginBottom: "5px",
+                            }}>     <h3 style={{
+                                color: "black", fontSize: "1.1rem",
+                            }}>
+                                    {" "}
+                                    Summa:
+                                    <CurrencyFormat
+                                        value={cartTotal}
+                                        displayType={"text"}
+                                        suffix=" sum"
+                                        thousandSeparator={true}
+                                        renderText={(value) => (
+                                            <span style={{ color: "#187CDF", fontSize: "1.1rem" }}>
+                                                {value}
+                                            </span>
+                                        )}
+                                    />
+                                </h3>
+                                <motion.div
+                                    onClick={() => cartEmpty()}
+                                    whileTap={{ scale: 1.1 }}
+                                    style={{
+                                        width: "80px",
+                                        height: "30px",
+                                        marginLeft: "auto",
+                                        marginTop: "auto",
+                                        marginBottom: "5px",
+                                    }}
+                                >
+                                    <DeleteIcon
+                                        style={{
+                                            color: "#d60505",
+                                            width: "100px",
+                                            height: "35px",
+                                            marginLeft: "auto",
+                                            marginBottom: "0px",
+                                        }}
+                                    />
+                                </motion.div>
+                            </div>
+                        </div>
 
+                        <Divider />
 
-
-
-
-                            <div className="main" style={{ height: height }}>
+                        <div className="mywrapperr" style={{ maxHeight: height, marginBottom: "70px" }}>
+                            <div className="main" >
                                 {items.map((item) => (
                                     <div key={item.id} className="itemMain">
                                         <motion.div
@@ -241,13 +215,34 @@ function Bottomcart({ opens: isOpen, func: foobar }) {
                             </div>
 
                             {/* Button stuff */}
+                            <Divider />
+                            <div>
+                                <div className="par">
+
+                                    <div className='paragraph'>
+
+                                    </div>
+                                    <motion.button
+                                        whileTap={{ scale: 1.1 }}
+                                        className="pl fixed"
+                                        onClick={handleCLicker}
+                                    >
+                                        Jonatish{" "}
+                                    </motion.button>
 
 
-                        </motion.div>
+                                </div>
 
-                    </motion.div >
+
+                            </div>
+
+                        </div>
+
+                    </div >
                 </Container>
-            </BottomSheet>
+
+            </SwipeableDrawer>
+
         </div >
     )
 }

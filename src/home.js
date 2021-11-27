@@ -6,7 +6,6 @@ import Grid from "@material-ui/core/Grid";
 import { CartProvider } from "react-use-cart";
 import Check from "./components/check/check";
 import { useHistory } from "react-router-dom";
-import Search from "./components/search/search";
 import { MobileView, isMobileOnly } from "react-device-detect";
 import Bottomcart from "./components/bottomCart/bottomcart";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -18,6 +17,11 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import Badge from "@material-ui/core/Badge";
 import LazyLoad from "react-lazyload";
 import { useCart } from "react-use-cart";
+import "./components/search/search.css";
+import { io } from "socket.io-client";
+
+const ip = "http://localhost:4000";
+const socket = io(ip);
 
 const useStyles = makeStyles({
   stickToBottom: {
@@ -30,7 +34,6 @@ const useStyles = makeStyles({
     width: 500,
   },
 });
-
 const StyledBadge = withStyles((theme) => ({
   badge: {
     right: -3,
@@ -60,7 +63,7 @@ function Home() {
     setTimeout(() => {
       (async function () {
         axios
-          .get("http://192.168.1.2:4000/data")
+          .get(`${ip}/data`)
           .then((res) => {
             setData(res.data);
             setLoading(false);
@@ -80,34 +83,34 @@ function Home() {
       />
     );
   return (
-    <div className="App">
+    <div>
       <CartProvider
         onItemAdd={() => setCount(count + 1)}
         onItemUpdate={() => setCount(count + 1)}
-        onItemRemove={() => setCount(0)}
+        onItemRemove={() => setCount(count - 1)}
       >
         <MobileView>
-          <LazyLoad once={true}>
-            <Bottomcart opens={opens} func={setOpens} />
-          </LazyLoad>
+          <Bottomcart soclopens={opens} ip={ip} func={setOpens} />
         </MobileView>
 
-        <Grid container spacing={0}>
+        <Grid container spacing={1}>
           {/* <Grid item xs={12} lg={12} sm={12}>
             <Search loading={loading} data={data} />
           </Grid> */}
-          <Grid item xs={12} md={7} lg={8} sm={6}>
+          <Grid item xs={12} md={8} lg={9} sm={12}>
             <LazyLoad once={true}>
-              <Content loading={loading} data={data} />
+              <Content loading={loading} ip={ip} data={data} />
             </LazyLoad>
           </Grid>
-          <Grid item xs={12} md={5} lg={4} sm={6}>
-            {isMobileOnly ? null : <Check />}
+          <Grid item xs={12} md={4} lg={3} sm={12}>
+            {isMobileOnly ? null : <Check socket={socket} ip={ip} />}
           </Grid>
         </Grid>
 
         {isMobileOnly ? (
           <BottomNavigation
+            ip={ip}
+            socket={socket}
             value={value}
             onChange={(event, newValue) => {
               setValue(newValue);
