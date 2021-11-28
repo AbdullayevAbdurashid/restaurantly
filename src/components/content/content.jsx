@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "antd/dist/antd.css";
 import Skeleton from "@material-ui/lab/Skeleton";
 import { Radio } from "antd";
@@ -10,6 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import CurrencyFormat from "react-currency-format";
 import { Tabs } from "antd";
 import LazyLoad from "react-lazyload";
+
+//MUI
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -18,15 +20,15 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grow from "@material-ui/core/Grow";
 
-import useIp from "../../context/ipProvider";
+//Others
+import { IpContext } from "../../context/ipProvider"
+
 function Content({ data, loading }) {
   const { TabPane } = Tabs;
-  const { ip, socket } = useIp();
-
+  const [ip] = useContext(IpContext)
   const [quality, setQuality] = useState({});
   const [pricer, setPrice] = useState({});
   const { addItem } = useCart();
-  const height = window.innerHeight + "px";
   let keys = Object.keys(data);
 
   const addCart = (obj) => {
@@ -59,70 +61,27 @@ function Content({ data, loading }) {
                     <Grid container spacing={2}>
                       {data &&
                         data[key].map(({ _id: id, ...obj }, index) => (
-<<<<<<< HEAD
-                          <Grid item xs={6} sm={6} md={3} lg={3}
-
-                          >
-                            <Card
-                            >
-                              <CardActionArea onClick={() => {
-                                let temprice = pricer[id] ? pricer[id] : "obj.price";
-                                let price = eval(temprice);
-                                let qual = quality[id] ? quality[id] : "1";
-
-                                let tempObj = {
-                                  id: id + "quality" + qual,
-                                  quality: qual,
-                                  name: obj.name + " " + qual,
-                                  price: price,
-                                  productImage: obj.productImage
-                                };
-
-                                addCart(tempObj);
-                              }}>
-
-                                <CardMedia
-                                  component="img"
-                                  alt="Ovqat"
-                                  height={200}
-                                  image={obj.productImage === "null" || !obj.productImage
-                                    ? placeholder
-                                    : "http://192.168.1.2:4000/" + obj.productImage}
-                                />
-                                <CardContent>
-                                  <Typography gutterBottom variant="h6" component="h3">
-                                    {obj.name}
-                                  </Typography>
-                                  <CurrencyFormat
-                                    value={pricer[id] ? eval(pricer[id]) : obj.price}
-                                    displayType={"text"}
-                                    suffix=" sum"
-                                    thousandSeparator={true}
-                                    renderText={(value) => (
-                                      <p className="secondName" style={{ marginTop: "1px" }}>{value} </p>
-                                    )}
-=======
                           <Grid item xs={6} sm={6} md={4} lg={3}>
                             <Grow in={true}>
                               <Card className="min-h-90">
                                 <div
-                                // onClick={() => {
-                                //   let temprice = pricer[id]
-                                //     ? pricer[id]
-                                //     : "obj.price";
-                                //   let price = eval(temprice);
-                                //   let qual = quality[id] ? quality[id] : "1";
+                                  onClick={() => {
+                                    let temprice = pricer[id]
+                                      ? pricer[id]
+                                      : "obj.price";
+                                    let price = eval(temprice);
+                                    let qual = quality[id] ? quality[id] : "1";
 
-                                //   let tempObj = {
-                                //     id: id + "quality" + qual,
-                                //     quality: qual,
-                                //     name: obj.name + " " + qual,
-                                //     price: price,
-                                //     productImage: obj.productImage,
-                                //   };
+                                    let tempObj = {
+                                      id: id + "quality" + qual,
+                                      quality: qual,
+                                      name: obj.name + " " + qual,
+                                      price: price,
+                                      productImage: obj.productImage,
+                                    };
 
-                                //   addCart(tempObj);
-                                // }}
+                                    addCart(tempObj);
+                                  }}
                                 >
                                   <CardMedia
                                     component="img"
@@ -135,7 +94,6 @@ function Content({ data, loading }) {
                                         : `${ip}/` +
                                         obj.productImage
                                     }
->>>>>>> d5b88f4e98cfee48c8f11e55f59074f4e02762e7
                                   />
                                   <CardContent>
                                     <Typography

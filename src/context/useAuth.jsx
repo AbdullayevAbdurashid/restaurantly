@@ -5,7 +5,7 @@ import React, {
     useMemo,
     useState,
 } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import * as sessionsApi from "../api/sessions";
 import * as usersApi from "../api/users";
 
@@ -46,7 +46,7 @@ export function AuthProvider({
     // is over.
     useEffect(() => {
         usersApi.getCurrentUser()
-            .then((user) => setUser(user))
+            .then((user) => user === "false" ? setUser(null) : setUser(localStorage.getItem("details")))
             .catch((_error) => { })
             .finally(() => setLoadingInitial(false));
     }, []);
@@ -64,11 +64,16 @@ export function AuthProvider({
 
         sessionsApi.login({ email, password })
             .then((res) => {
-                setUser(res.name);
-                localStorage.setItem("details", JSON.stringify(res))
+                localStorage.setItem("details", res.loginName)
+                setUser(localStorage.getItem("details"));
+                history.push("/waiter");
+
             })
-            .catch((error) => setError(error))
-            .finally(() => setLoading(false));
+            .catch((error) => setError(error.message))
+            .finally(() => {
+                setLoading(false);
+
+            });
     }
 
 
