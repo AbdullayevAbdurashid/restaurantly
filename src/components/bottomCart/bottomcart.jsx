@@ -30,10 +30,6 @@ function Bottomcart({ opens: isOpen, func: foobar, socket: sock, ip: add }) {
     function onDismiss() {
         foobar(false);
     }
-<<<<<<< HEAD
-    const socket = io("http://192.168.1.2:4000");
-=======
->>>>>>> d5b88f4e98cfee48c8f11e55f59074f4e02762e7
 
     ;
     //Refs and states
@@ -63,7 +59,7 @@ function Bottomcart({ opens: isOpen, func: foobar, socket: sock, ip: add }) {
         });
         axios({
             method: "post",
-            url: "http://192.168.1.2:4000/status",
+            url: "http://localhost:4000/status",
             data: {
                 date: date,
                 money: cartTotal,
