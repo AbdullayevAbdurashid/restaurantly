@@ -3,17 +3,17 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
 } from "react-router-dom";
-
+import { lazy, Suspense } from "react";
 import Home from "./home";
 import { CartProvider } from "react-use-cart";
 import Overall from "./components/overall/overall";
-import Login from "./components/waiters/login";
-import Waiter from "./components/waiters/waiters";
 import useAuth, { AuthProvider } from "./context/useAuth";
-import Myorders from "./components/myorders/myorders";
 import { IPprovider } from "./context/ipProvider";
+
+const Login = lazy(() => import("./components/waiters/login"));
+const Waiter = lazy(() => import("./components/waiters/waiters"));
 
 function AuthenticatedRoute({ roles, ...props }) {
   const { user } = useAuth();
@@ -22,10 +22,7 @@ function AuthenticatedRoute({ roles, ...props }) {
 
   return <Route {...props} />;
 }
-
 function Routes() {
-
-
   return (
     <Router>
       <Switch>
@@ -33,15 +30,15 @@ function Routes() {
           <Route path="/check" component={Overall} />
           <Route exact path="/" component={Home} />
           <AuthProvider>
-            <AuthenticatedRoute
-              exact
-              path="/waiter"
-              component={Waiter}
-            />
-            <Route exact path="/login" component={Login} />
-
+            <Suspense fallback={<div>Загрузка...</div>}>
+              <Route path="/login" component={Login} />
+              <AuthenticatedRoute
+                exact
+                path="/waiter"
+                component={Waiter}
+              />{" "}
+            </Suspense>
           </AuthProvider>
-          <Route path="/myorders" component={Myorders} />
         </IPprovider>
       </Switch>
     </Router>

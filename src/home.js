@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Empty } from "antd";
 import Content from "./components/content/content";
@@ -18,10 +18,7 @@ import Badge from "@material-ui/core/Badge";
 import LazyLoad from "react-lazyload";
 import { useCart } from "react-use-cart";
 import "./components/search/search.css";
-import { io } from "socket.io-client";
-
-const ip = "http://localhost:4000";
-const socket = io(ip);
+import { IpContext } from "./context/ipProvider";
 
 const useStyles = makeStyles({
   stickToBottom: {
@@ -42,18 +39,21 @@ const StyledBadge = withStyles((theme) => ({
     padding: "0 4px",
   },
 }))(Badge);
-function Home() {
-  const { totalItems } = useCart();
 
+function Home() {
+  const [ip, socket] = useContext(IpContext);
+
+  const classes = useStyles();
+  let history = useHistory();
+
+  const { totalItems } = useCart();
   const [data, setData] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const classes = useStyles();
   const [value, setValue] = useState(0);
   const [opens, setOpens] = useState(false);
 
   const [count, setCount] = useState(totalItems);
-  let history = useHistory();
 
   useEffect(() => {
     setLoading(true);
@@ -82,6 +82,7 @@ function Home() {
         style={{ marginTop: "200px" }}
       />
     );
+
   return (
     <div>
       <CartProvider
@@ -90,7 +91,7 @@ function Home() {
         onItemRemove={() => setCount(count - 1)}
       >
         <MobileView>
-          <Bottomcart soclopens={opens} ip={ip} func={setOpens} />
+          <Bottomcart opens={opens} func={setOpens} />
         </MobileView>
 
         <Grid container spacing={1}>
@@ -103,7 +104,7 @@ function Home() {
             </LazyLoad>
           </Grid>
           <Grid item xs={12} md={4} lg={3} sm={12}>
-            {isMobileOnly ? null : <Check socket={socket} ip={ip} />}
+            {isMobileOnly ? null : <Check />}
           </Grid>
         </Grid>
 

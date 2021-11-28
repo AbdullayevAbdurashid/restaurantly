@@ -10,10 +10,10 @@ import Grid from "@material-ui/core/Grid";
 import CurrencyFormat from "react-currency-format";
 import { Tabs } from "antd";
 import LazyLoad from "react-lazyload";
-
+import { motion } from "framer-motion";
 //MUI
+import AddIcon from '@material-ui/icons/Add';
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -65,23 +65,7 @@ function Content({ data, loading }) {
                             <Grow in={true}>
                               <Card className="min-h-90">
                                 <div
-                                  onClick={() => {
-                                    let temprice = pricer[id]
-                                      ? pricer[id]
-                                      : "obj.price";
-                                    let price = eval(temprice);
-                                    let qual = quality[id] ? quality[id] : "1";
 
-                                    let tempObj = {
-                                      id: id + "quality" + qual,
-                                      quality: qual,
-                                      name: obj.name + " " + qual,
-                                      price: price,
-                                      productImage: obj.productImage,
-                                    };
-
-                                    addCart(tempObj);
-                                  }}
                                 >
                                   <CardMedia
                                     component="img"
@@ -96,6 +80,31 @@ function Content({ data, loading }) {
                                     }
                                   />
                                   <CardContent>
+                                    <div className="relative ml-auto ">
+                                      <motion.button
+                                        whileTap={{ scale: 0.9 }}
+                                        className="pplus absolute -right-2 -top-10  h-10 w-10 bg-red-100"
+                                        onClick={() => {
+
+                                          let temprice = pricer[id]
+                                            ? pricer[id]
+                                            : "obj.price";
+                                          let price = eval(temprice);
+                                          let qual = quality[id] ? quality[id] : "1";
+
+                                          let tempObj = {
+                                            id: id + "quality" + qual,
+                                            quality: qual,
+                                            name: obj.name + " " + qual,
+                                            price: price,
+                                            productImage: obj.productImage,
+                                          };
+
+                                          addCart(tempObj);
+                                        }}
+                                      >
+                                        <AddIcon fontSize="medium" />
+                                      </motion.button></div>
                                     <Typography
                                       gutterBottom
                                       variant="h6"

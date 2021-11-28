@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { io } from "socket.io-client";
+import React, { useState, useEffect, useContext } from "react";
+
+
+
 import axios from "axios";
 import Container from "@material-ui/core/Container";
 import { motion } from "framer-motion";
@@ -14,8 +16,8 @@ import HomeIcon from "@material-ui/icons/Home";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 
-const ip = "http://localhost:4000"
-const socket = io(ip);
+import { IpContext } from "../../context/ipProvider"
+
 
 const useStyles = makeStyles({
   stickToBottom: {
@@ -30,10 +32,18 @@ const useStyles = makeStyles({
 });
 
 function Overall() {
+
+  const [ip, socket] = useContext(IpContext)
+
+
+
+  //Router stuff
   let history = useHistory();
   const classes = useStyles();
   const input = sessionStorage.getItem("table");
 
+
+  //States 
   const [service, setService] = useState([]);
   const [data, setData] = useState([]);
   const [table, setsingleTable] = useState([false]);
@@ -44,10 +54,15 @@ function Overall() {
   const [anim, setAnim] = useState(0);
   const [value, setValue] = useState();
 
+  //Local password that changes   
+  const password = "admin2020";
+
   const showModal = () => {
     setIsModalVisible(true);
   };
 
+
+  //Getting order list when page loaded
   useEffect(() => {
     socket.on("recieve-order", (message) => {
       (async function () {
@@ -112,6 +127,9 @@ function Overall() {
       }
     })();
   }, []);
+
+
+  //table columns array
   const columns = [
     {
       title: "Name",
@@ -162,7 +180,7 @@ function Overall() {
     },
   ];
 
-
+  //Function activated when clicked on button
   function filterTables() {
     let allOrders = {};
     let allOrdersFromSingleTable = data
@@ -211,7 +229,9 @@ function Overall() {
     // allOrdersFromSingleTable is what u should print
     setsingleTable([allOrdersFromSingleTable]);
   }
-  const password = "admin2020";
+
+
+  //End order button action
   const deleteObj = (id) => {
     if (inputValues === password) {
       socket.emit("done-order", id);
@@ -226,6 +246,8 @@ function Overall() {
       setIncorrect(true);
     }
   };
+
+
   return (
     <Container maxWidth="sm">
       <motion.div className="cheklist"

@@ -22,6 +22,8 @@ import Grow from "@material-ui/core/Grow";
 import { message } from 'antd';
 import { IpContext } from "../../context/ipProvider"
 import { useContext } from 'react';
+
+
 const { TabPane } = Tabs;
 
 
@@ -60,6 +62,8 @@ const StyledBadge = withStyles((theme) => ({
 function Waiter() {
     const { user } = useAuth();
     const [ip, socket] = useContext(IpContext)
+
+
     const [myorder, setOrder] = useState([])
     const getOrder = (table) => {
         axios.post(`${ip}/occupyOrder`, { table: table, name: user }).then(() => {

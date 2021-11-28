@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import 'react-spring-bottom-sheet/dist/style.css'
 import { useCart } from "react-use-cart";
 import { motion } from "framer-motion";
@@ -13,11 +13,14 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Container from "@material-ui/core/Container";
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Divider from '@material-ui/core/Divider';
+import { IpContext } from "../../context/ipProvider"
 
-const socket = io("http://localhost:4000");
+
+function Bottomcart({ opens: isOpen, func: foobar, }) {
 
 
-function Bottomcart({ opens: isOpen, func: foobar, socket: sock, ip: add }) {
+    const [ip, socket] = useContext(IpContext)
+
     const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
     const {
@@ -59,7 +62,7 @@ function Bottomcart({ opens: isOpen, func: foobar, socket: sock, ip: add }) {
         });
         axios({
             method: "post",
-            url: "http://localhost:4000/status",
+            url: `${ip}/status`,
             data: {
                 date: date,
                 money: cartTotal,

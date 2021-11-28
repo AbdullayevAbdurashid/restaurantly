@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useCart } from "react-use-cart";
 import { motion } from "framer-motion";
 import Divider from "@material-ui/core/Divider";
 import "./check.css";
 import axios from "axios";
-import { io } from "socket.io-client";
 import CurrencyFormat from "react-currency-format";
 import AddIcon from "@material-ui/icons/Add";
 import { Button } from "antd";
@@ -13,10 +12,20 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { Modal } from "antd";
 import PlaylistAddCheckOutlinedIcon from '@material-ui/icons/PlaylistAddCheckOutlined';
 import { Link } from "react-router-dom";
-import Container from "@material-ui/core/Container";
 import { message } from "antd";
 import ButtonMain from "../button/buttonMain";
-function Check({ socket }) {
+
+import { IpContext } from "../../context/ipProvider"
+
+
+
+function Check() {
+
+  const [ip, socket] = useContext(IpContext)
+
+
+  const input = sessionStorage.getItem("table");
+
   const {
     isEmpty,
     cartTotal,
@@ -32,7 +41,6 @@ function Check({ socket }) {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const input = sessionStorage.getItem("table");
 
   //Sending data to server to orders page
   const setPosst = () => {
@@ -48,7 +56,7 @@ function Check({ socket }) {
   const setPost = () => {
     axios({
       method: "post",
-      url: "http://192.168.43.2:4000/status",
+      url: `${ip}/status`,
       data: {
         date: date,
         money: cartTotal,
