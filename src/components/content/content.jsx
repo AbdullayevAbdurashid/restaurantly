@@ -59,6 +59,49 @@ function Content({ data, loading }) {
                     <Grid container spacing={2}>
                       {data &&
                         data[key].map(({ _id: id, ...obj }, index) => (
+<<<<<<< HEAD
+                          <Grid item xs={6} sm={6} md={3} lg={3}
+
+                          >
+                            <Card
+                            >
+                              <CardActionArea onClick={() => {
+                                let temprice = pricer[id] ? pricer[id] : "obj.price";
+                                let price = eval(temprice);
+                                let qual = quality[id] ? quality[id] : "1";
+
+                                let tempObj = {
+                                  id: id + "quality" + qual,
+                                  quality: qual,
+                                  name: obj.name + " " + qual,
+                                  price: price,
+                                  productImage: obj.productImage
+                                };
+
+                                addCart(tempObj);
+                              }}>
+
+                                <CardMedia
+                                  component="img"
+                                  alt="Ovqat"
+                                  height={200}
+                                  image={obj.productImage === "null" || !obj.productImage
+                                    ? placeholder
+                                    : "http://192.168.1.2:4000/" + obj.productImage}
+                                />
+                                <CardContent>
+                                  <Typography gutterBottom variant="h6" component="h3">
+                                    {obj.name}
+                                  </Typography>
+                                  <CurrencyFormat
+                                    value={pricer[id] ? eval(pricer[id]) : obj.price}
+                                    displayType={"text"}
+                                    suffix=" sum"
+                                    thousandSeparator={true}
+                                    renderText={(value) => (
+                                      <p className="secondName" style={{ marginTop: "1px" }}>{value} </p>
+                                    )}
+=======
                           <Grid item xs={6} sm={6} md={4} lg={3}>
                             <Grow in={true}>
                               <Card className="min-h-90">
@@ -92,6 +135,7 @@ function Content({ data, loading }) {
                                         : `${ip}/` +
                                         obj.productImage
                                     }
+>>>>>>> d5b88f4e98cfee48c8f11e55f59074f4e02762e7
                                   />
                                   <CardContent>
                                     <Typography

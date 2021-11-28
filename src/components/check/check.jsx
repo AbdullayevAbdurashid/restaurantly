@@ -15,8 +15,14 @@ import PlaylistAddCheckOutlinedIcon from '@material-ui/icons/PlaylistAddCheckOut
 import { Link } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import { message } from "antd";
+<<<<<<< HEAD
+
+const socket = io("http://192.168.1.2:4000");
+function Check() {
+=======
 import ButtonMain from "../button/buttonMain";
 function Check({ socket }) {
+>>>>>>> d5b88f4e98cfee48c8f11e55f59074f4e02762e7
   const {
     isEmpty,
     cartTotal,
@@ -48,7 +54,11 @@ function Check({ socket }) {
   const setPost = () => {
     axios({
       method: "post",
+<<<<<<< HEAD
+      url: "http://192.168.1.2:4000/status",
+=======
       url: "http://192.168.43.2:4000/status",
+>>>>>>> d5b88f4e98cfee48c8f11e55f59074f4e02762e7
       data: {
         date: date,
         money: cartTotal,
