@@ -14,7 +14,7 @@ import PlaylistAddCheckOutlinedIcon from '@material-ui/icons/PlaylistAddCheckOut
 import { Link } from "react-router-dom";
 import { message } from "antd";
 import ButtonMain from "../button/buttonMain";
-
+import { Grid } from "@material-ui/core";
 import { IpContext } from "../../context/ipProvider"
 
 
@@ -163,36 +163,54 @@ function Check() {
                 animate={{ x: anim }}
                 className="productts"
               >
-                <div>
-                  <p className="firstName">{item.name}</p>
+                <Grid container spacing={0} >
+                  <Grid item xs={6} >
 
-                  <CurrencyFormat
-                    value={item.price * item.quantity}
-                    displayType={"text"}
-                    suffix=" sum"
-                    thousandSeparator={true}
-                    renderText={(value) => (
-                      <motion.p className="secondName"> {value} </motion.p>
-                    )}
-                  />
-                </div>
-                <div className="productss">
-                  <ButtonMain
-                    styles="pplus"
-                    content={<AddIcon />}
-                    onClicks={() =>
-                      updateItemQuantity(item.id, item.quantity + 1)
-                    }
-                  />
-                  <p className="quan">{item.quantity}</p>
-                  <ButtonMain
-                    styles="pplus"
-                    content={<RemoveIcon />}
-                    onClicks={() =>
-                      updateItemQuantity(item.id, item.quantity - 1)
-                    }
-                  />
-                </div>
+                    <div>
+                      <p className="firstName">{item.name}</p>
+
+                      <CurrencyFormat
+                        value={item.price * item.quantity}
+                        displayType={"text"}
+                        suffix=" sum"
+                        thousandSeparator={true}
+                        renderText={(value) => (
+                          <motion.p className="secondName"> {value} </motion.p>
+                        )}
+                      />
+                    </div>
+                  </Grid>
+                  <Grid item xs={6} >
+
+                    <div className="gap-2 flex flex-row flex-wrap flex-none w-full mr-auto">
+                      <span className="mb-auto">
+                        <ButtonMain
+                          styles="pplus  h-8 w-8 "
+                          content={<AddIcon />}
+                          onClicks={() =>
+                            updateItemQuantity(item.id, item.quantity + 1)
+                          }
+                        />
+                      </span>
+                      <span className="text-lg    -mt-1">
+                        <p >{item.quantity}</p>
+                      </span>
+                      <span className="  mb-auto">
+                        <motion.button
+                          className="pplus  h-8 w-8"
+                          whileTap={{ scale: 0.8 }}
+                          onClick={() =>
+                            updateItemQuantity(item.id, item.quantity - 1)
+                          }
+                        >
+
+                          <RemoveIcon />
+                        </motion.button>
+                      </span>
+                    </div>
+                  </Grid>
+                </Grid>
+
               </motion.div>
             </div>
           ))}

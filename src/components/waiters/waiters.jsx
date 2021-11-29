@@ -14,7 +14,6 @@ import backgound from "./back.jpg"
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import Badge from "@material-ui/core/Badge";
-import { io } from "socket.io-client";
 import { Popconfirm } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -22,7 +21,7 @@ import Grow from "@material-ui/core/Grow";
 import { message } from 'antd';
 import { IpContext } from "../../context/ipProvider"
 import { useContext } from 'react';
-
+import addNotification from 'react-push-notification';
 
 const { TabPane } = Tabs;
 
@@ -85,14 +84,36 @@ function Waiter() {
     const [expanded, setExpanded] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState(false);
     const notify = () => {
-        message.success("Yangi zakaz bor")
+        addNotification({
+            title: 'Yangi zakaz',
+            subtitle: 'Xizmat korsatayotgan stoldan zakaz bor',
+            theme: 'darkblue',
+            native: true // when using native, your OS will handle theming.
+        });
+
     }
-    console.log(user)
+    const notifySilent = () => {
+        message.success("Zakaz tushdi")
+    }
     useEffect(() => {
         socket.on("recieve-order", (message) => {
-            if (message === "order sent") {
-                notify("order recieved")
-            } (async function () {
+            if (message === "none") {
+                notifySilent()
+            } else {
+                if (message === user) {
+                    notify();
+                    (async function () {
+                        const { data } = await axios.get(`${ip}/waiterOrders/${user}`);
+                        data.reverse()
+                        setOrder(data);
+
+                    })();
+
+                }
+
+            }
+
+            (async function () {
                 const { data } = await axios.get(`${ip}/waiterOrders/new`);
                 data.reverse()
                 setData(data);
@@ -266,12 +287,7 @@ function Waiter() {
                                                     >
                                                         <ExpandMoreIcon className="text-white  mb-1" fontSize="large" />
                                                     </IconButton>
-                                                    <motion.button
-                                                        whileTap={{ scale: 0.9 }}
-                                                        onClick={getOrder}
-                                                        className="w-24 absolute bottom-4 right-2 bg-gradient-to-r  d from-blue-700 h-10 rounded-xl  text-lg  focus:ring-offset-indigo-800 focus:border-transparent transit to-blue-800  text-white" type="submit">
-                                                        Olish ✅
-                                                    </motion.button>
+
                                                 </span>
                                             </CardActions>
                                             <Collapse in={expandedOrder[index]
@@ -378,7 +394,7 @@ function Waiter() {
                 <motion.button
 
                     onClick={handleLogout}
-                    className="bg-red-500 text-white  w-24    text-lg h-10  absolute bottom-4 left-12  ">
+                    className="bg-gray-500 text-white  w-24    text-lg h-10  absolute bottom-4 right-2 rounded-xl  ">
                     Logout
 
                 </motion.button>

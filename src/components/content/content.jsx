@@ -82,7 +82,7 @@ function Content({ data, loading }) {
                                   <CardContent>
                                     <div className="relative ml-auto ">
                                       <motion.button
-                                        whileTap={{ scale: 0.9 }}
+                                        whileTap={{ scale: 0.8 }}
                                         className="pplus absolute -right-2 -top-10  h-10 w-10 bg-red-100"
                                         onClick={() => {
 
@@ -171,49 +171,11 @@ function Content({ data, loading }) {
                                       0.7
                                     </Radio.Button>
                                   </Radio.Group>
-                                  {/* <motion.button
-                                  className="pplus"
-                                  onClick={() => {
-                                    let temprice = pricer[id] ? pricer[id] : "obj.price";
-                                    let price = eval(temprice);
-                                    let qual = quality[id] ? quality[id] : "1";
 
-                                    let tempObj = {
-                                      id: id + "quality" + qual,
-                                      quality: qual,
-                                      name: obj.name + " " + qual,
-                                      price: price,
-                                      productImage: obj.productImage
-                                    };
-
-                                    addCart(tempObj);
-                                  }}
-                                >
-
-                                  <AddIcon />
-                                </motion.button> */}
                                 </CardActions>
                               </Card>
                             </Grow>
                           </Grid>
-                          // <Grid item xs={12} sm={12} md={6} lg={4}>
-                          //   <div>
-
-                          //     <LazyLoad height={65}>
-                          //       <motion.div key={obj.id} className="products">
-
-                          //
-
-                          //         <div>
-                          //           <p className="firstName">{obj.name}</p>
-
-                          //         </div>
-
-                          //       </motion.div>
-                          //     </LazyLoad>
-
-                          //   </div>
-                          // </Grid>
                         ))}
                     </Grid>
                   </div>
