@@ -11,6 +11,7 @@ import { CartProvider } from "react-use-cart";
 import Overall from "./components/overall/overall";
 import useAuth, { AuthProvider } from "./context/useAuth";
 import { IPprovider } from "./context/ipProvider";
+import { Notifications } from "react-push-notification";
 
 const Login = lazy(() => import("./components/waiters/login"));
 const Waiter = lazy(() => import("./components/waiters/waiters"));
@@ -22,6 +23,8 @@ function AuthenticatedRoute({ roles, ...props }) {
 
   return <Route {...props} />;
 }
+//TO DO
+// ADD LAZY LOAD WAITER
 function Routes() {
   return (
     <Router>
@@ -31,6 +34,7 @@ function Routes() {
           <Route exact path="/" component={Home} />
           <AuthProvider>
             <Suspense fallback={<div>Загрузка...</div>}>
+              <Notifications />
               <Route path="/login" component={Login} />
               <AuthenticatedRoute
                 exact
