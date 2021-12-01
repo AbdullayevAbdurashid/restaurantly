@@ -14,6 +14,8 @@ import backgound from "./back.jpg"
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import Badge from "@material-ui/core/Badge";
+import { Badge as Fedge } from 'antd';
+
 import { Popconfirm } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -22,6 +24,13 @@ import { message } from 'antd';
 import { IpContext } from "../../context/ipProvider"
 import { useContext } from 'react';
 import addNotification from 'react-push-notification';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { Fab } from '@material-ui/core';
+import LazyLoad from 'react-lazyload';
+import { Redirect } from 'react-router';
+import neworder from "./sounds/neworder.mp3"
+import complete from "./sounds/complete.mp3"
+import call from "./sounds/waitercalling.mp3"
 
 const { TabPane } = Tabs;
 
@@ -84,17 +93,45 @@ function Waiter() {
     const [expanded, setExpanded] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState(false);
     const notify = () => {
-        addNotification({
-            title: 'Yangi zakaz',
-            subtitle: 'Xizmat korsatayotgan stoldan zakaz bor',
-            theme: 'darkblue',
-            native: true // when using native, your OS will handle theming.
-        });
-
+        message.warning("Yangi zakaz bor")
     }
     const notifySilent = () => {
-        message.success("Zakaz tushdi")
+        if (myorder.length === 0) {
+            let audio = new Audio(neworder)
+            audio.play()
+            message.warning("Yangi zakaz tushdi")
+
+        }
+
     }
+    const notifyOrderTaken = (table, waiter) => {
+        if (waiter === user) {
+            let audio = new Audio(complete)
+            audio.play()
+            message.success(`${table}chi stolni zakazi tayyor`)
+
+        }
+    }
+
+    const notifyWaiterCalling = (table, waiter) => {
+        if (waiter === user) {
+            let audio = new Audio(call)
+            audio.play()
+            message.success(`${table}- chi stol sizni chaqiryapti`, 10000)
+            let duraction = setInterval(() => {
+                let audio = new Audio(call)
+                audio.play()
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(duraction)
+                socket.emit("")
+            }, 3000);
+
+        }
+    }
+
+
     useEffect(() => {
         socket.on("recieve-order", (message) => {
             if (message === "none") {
@@ -106,18 +143,29 @@ function Waiter() {
                         const { data } = await axios.get(`${ip}/waiterOrders/${user}`);
                         data.reverse()
                         setOrder(data);
-
                     })();
 
                 }
-
             }
-
             (async function () {
                 const { data } = await axios.get(`${ip}/waiterOrders/new`);
                 data.reverse()
                 setData(data);
             })();
+        });
+
+        socket.on("take-order", ({ table, responsibleWaiter }) => {
+
+
+
+            notifyOrderTaken(table, responsibleWaiter)
+
+        });
+
+        socket.on("coming", ({ table, responsibleWaiter }) => {
+
+            notifyWaiterCalling(table, responsibleWaiter)
+
         });
         (async function () {
             const { data } = await axios.get(`${ip}/waiterOrders/new`);
@@ -145,21 +193,26 @@ function Waiter() {
         getOrder(table)
     };
 
-    const handleCancel = () => {
-        setVisible(false);
-    };
+
     const handleExpandClick = (index, isExpanded) => {
         setExpanded({ ...expanded, [index]: !expanded[index] ? true : false });
     };
     const handleExpandOrder = (index) => {
         setExpandedOrder({ ...expandedOrder, [index]: !expandedOrder[index] ? true : false });
     };
+    const setVisibleConfirm = (index) => {
+        setVisible({ ...visible, [index]: !visible[index] ? true : false });
+    };
+
 
     const [visible, setVisible] = useState(false);
-
+    if (localStorage.getItem("details") === "false" || !localStorage.getItem("details"))
+        return (
+            <Redirect to="/login" />
+        );
 
     return (
-        <div style={{ backgroundImage: `url(${backgound})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }} className=" waiters min-h-screen">
+        <div style={{ backgroundImage: `url(${backgound})`, marginBottom: "30px", backgroundRepeat: "no-repeat", backgroundSize: "cover" }} className=" waiters min-h-screen">
 
             <Container maxWidth="md" className=" min-h-screen backdrop-filter  backdrop-blur-md">
 
@@ -170,11 +223,12 @@ function Waiter() {
 
                             {data &&
                                 data.map((obj, index) => (
+
                                     <Grow in={true}>
                                         <Card className="mb-4">
                                             <CardContent>
                                                 <h1 className="text-yellow-500 text-xl font-bold">
-                                                    #{data.length - index}
+                                                    ORDER #{data.length - index}
                                                 </h1>
                                                 <h3 className="text-green-400 -mt-3  text-sm font-bold ">
                                                     {(Number(obj.time.split(":")[0]) - new Date().getHours()) === 0 ? (new Date().getMinutes() - Number(obj.time.split(":")[1])) + " min oldin" : (new Date().getHours() - Number(obj.time.split(":")[0])) + " soat oldin"}                                             </h3>
@@ -204,15 +258,15 @@ function Waiter() {
                                                         <ExpandMoreIcon className="text-white  mb-1" fontSize="large" />
                                                     </IconButton>
                                                     <Popconfirm
-                                                        title="DO YOU CONFIRM?"
-                                                        visible={visible}
+                                                        title="Tasdiqlaysizmi?"
+                                                        visible={visible[index]}
                                                         onConfirm={() => handleOk(obj.table)}
                                                         okButtonProps={{ loading: confirmLoading }}
-                                                        onCancel={handleCancel}
+                                                        onCancel={() => setVisibleConfirm(index)}
                                                     >
                                                         <motion.button
                                                             whileTap={{ scale: 0.9 }}
-                                                            onClick={() => setVisible(true)}
+                                                            onClick={() => setVisibleConfirm(index)}
                                                             className="w-24 absolute bottom-4 right-2 bg-gradient-to-r  d from-blue-700 h-10 rounded-xl  text-lg  focus:ring-offset-indigo-800 focus:border-transparent transit to-blue-800  text-white" type="submit">
                                                             Olish ✅
                                                         </motion.button>
@@ -253,154 +307,90 @@ function Waiter() {
 
                             {myorder &&
                                 myorder.map((obj, index) => (
+
                                     <Grow in={true}>
-                                        <Card className="mb-4">
-                                            <CardContent>
-                                                <h1 className="text-yellow-500 text-xl font-bold">
-                                                    ORDER #325
-                                                </h1>
-                                                <h3 className=" text-green-400 -mt-3  text-sm font-bold ">
-                                                    12:20
-                                                </h3>
-                                                <h2 className="absolute top-4 right-4  text-yellow-500 text-lg font-bold ">
-                                                    Stol: {obj.table}
-                                                </h2>
-                                                <h3 className="text-white text-lg font-medium">
-                                                    Jami taomlar:{myorder[index].foods.length}
-                                                </h3>
+                                        <Fedge.Ribbon color={obj.status === "pending" ? "volcano" : "green"} text={obj.status === "pending" ? "Not ready" : "Tayyor  "}>
 
-                                            </CardContent>
-                                            <CardActions disableSpacing>
+                                            <Card className="mb-4">
+                                                <CardContent>
+                                                    <h1 className="text-yellow-500 text-xl font-bold">
+                                                        ORDER #{myorder.length - index}
+                                                    </h1>
+                                                    <h3 className=" text-green-400 -mt-3  text-sm font-bold ">
+                                                        {(Number(obj.time.split(":")[0]) - new Date().getHours()) === 0 ? (new Date().getMinutes() - Number(obj.time.split(":")[1])) + " min oldin" : (new Date().getHours() - Number(obj.time.split(":")[0])) + " soat oldin"}                                                                             </h3>
+                                                    <h2 className="absolute bottom-6 right-4  text-yellow-500 text-lg font-bold ">
+                                                        Stol: {obj.table}
+                                                    </h2>
 
-                                                <h3 className="text-white text-lg font-medium">
-                                                    Taomlar:
-                                                </h3>
-                                                <span className="inline-block">
-                                                    <IconButton
-                                                        className={clsx(classes.expand, {
-                                                            [classes.expandOpen]: expanded[index]
-                                                                ? expanded[index] : null,
-                                                        })}
-                                                        onClick={() => handleExpandOrder(index)}
-                                                        aria-expanded={expanded}
-                                                        aria-label="show more"
-                                                    >
-                                                        <ExpandMoreIcon className="text-white  mb-1" fontSize="large" />
-                                                    </IconButton>
+                                                    <h3 className="text-white text-lg font-medium">
+                                                        Jami taomlar:{myorder[index].foods.length}
+                                                    </h3>
 
-                                                </span>
-                                            </CardActions>
-                                            <Collapse in={expandedOrder[index]
-                                                ? expandedOrder[index] : null
-                                            } timeout="auto" unmountOnExit>
-                                                {
-                                                    myorder[index].foods.map((foodObj, indx) => (
-                                                        <CardContent>
-                                                            <div key={indx}>
-                                                                <span>
-                                                                    <p className=" text-white text-xl  uppercase">{foodObj.name}</p>
-                                                                    <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
-                                                                <h2 className=" text-yellow-400 text-xl"> 2x </h2>
+                                                </CardContent>
+                                                <CardActions disableSpacing>
 
-                                                            </div>
+                                                    <h3 className="text-white text-lg font-medium">
+                                                        Taomlar:
+                                                    </h3>
+                                                    <span className="inline-block">
+                                                        <IconButton
+                                                            className={clsx(classes.expand, {
+                                                                [classes.expandOpen]: expanded[index]
+                                                                    ? expanded[index] : null,
+                                                            })}
+                                                            onClick={() => handleExpandOrder(index)}
+                                                            aria-expanded={expanded}
+                                                            aria-label="show more"
+                                                        >
+                                                            <ExpandMoreIcon className="text-white  mb-1" fontSize="large" />
+                                                        </IconButton>
+
+                                                    </span>
+                                                </CardActions>
+                                                <Collapse in={expandedOrder[index]
+                                                    ? expandedOrder[index] : null
+                                                } timeout="auto" unmountOnExit>
+                                                    {
+                                                        myorder[index].foods.map((foodObj, indx) => (
+                                                            <CardContent>
+                                                                <div key={indx}>
+                                                                    <span>
+                                                                        <p className=" text-white text-xl  uppercase">{foodObj.name}</p>
+                                                                        <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
+                                                                    <h2 className=" text-yellow-400 text-xl"> 2x </h2>
+
+                                                                </div>
 
 
-                                                        </CardContent>
-                                                    ))}
-                                            </Collapse>
-                                        </Card>
+                                                            </CardContent>
+                                                        ))}
+                                                </Collapse>
+                                            </Card>
+                                        </Fedge.Ribbon>
                                     </Grow>
-
                                 ))}
 
 
 
 
-                            {/* <Card className="mb-4">
-                                <CardContent>
-                                    <h1 className="text-yellow-500 text-xl font-bold">
-                                        ORDER #325
-                                    </h1>
-                                    <h3 className=" text-green-400 -mt-3  text-sm font-bold ">
-                                        12:20
-                                    </h3>
-                                    <h2 className="absolute top-4 right-4  text-yellow-500 text-lg font-bold ">
-                                        Stol:12
-                                    </h2>
-                                    <h3 className="text-white text-lg font-medium">
-                                        Jami taomlar:12
-                                    </h3>
 
-                                </CardContent>
-                                <CardActions disableSpacing>
-                                    <h3 className="text-white text-lg font-medium">
-                                        Taomlar:
-                                    </h3>
-                                    <span className="inline-block">
-                                        <IconButton
-                                            className={clsx(classes.expand, {
-                                                [classes.expandOpen]: expanded,
-                                            })}
-                                            onClick={handleExpandClick}
-                                            aria-expanded={expanded}
-                                            aria-label="show more"
-                                        >
-                                            <ExpandMoreIcon className="text-white  mb-1" fontSize="large" />
-                                        </IconButton>
-                                        <motion.button
-                                            whileTap={{ scale: 0.9 }}
-                                            className="w-24 absolute bottom-5 right-2 bg-gradient-to-r  d from-red-800 h-10 rounded-xl  text-lg  focus:ring-offset-indigo-800 focus:border-transparent transit to-red-500  text-white" type="submit">
-                                            End order
-                                        </motion.button>
-                                    </span>
-                                </CardActions>
-                                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                                    <CardContent>
-                                        <div>
-                                            <span>
-                                                <p className=" text-white text-xl  uppercase">Shorva</p>
-                                                <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
-                                            <h2 className=" text-yellow-400 text-xl"> 2x </h2>
-
-                                        </div>
-                                        <div>
-                                            <span>
-                                                <p className=" text-white text-xl  uppercase">Mastava</p>
-                                                <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
-                                            <h2 className=" text-yellow-400 text-xl"> 4x </h2>
-
-                                        </div>
-                                        <div>
-                                            <span>
-                                                <p className=" text-white text-xl  uppercase">Lavash</p>
-                                                <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
-                                            <h2 className=" text-yellow-400 text-xl"> 1x </h2>
-
-                                        </div>
-                                        <div>
-                                            <span>
-                                                <p className=" text-white text-xl  uppercase">Pepsi 0.5 </p>
-                                                <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
-                                            <h2 className=" text-yellow-400 text-xl"> 1x </h2>
-
-                                        </div>
-                                    </CardContent>
-                                </Collapse>
-                            </Card> */}
                         </TabPane>
 
                     </Tabs>
                 </div>
-                <motion.button
-
-                    onClick={handleLogout}
-                    className="bg-gray-500 text-white  w-24    text-lg h-10  absolute bottom-4 right-2 rounded-xl  ">
-                    Logout
-
-                </motion.button>
             </Container >
+            <Fab style={{ position: "fixed", bottom: "30px", right: "5px" }}
+                color="secondary" aria-label="add"
+                onClick={handleLogout}
+            >
+                <ExitToAppIcon />
+            </Fab>
 
-        </div>
+
+
+
+
+        </div >
     )
 }
 

@@ -4,7 +4,7 @@ import { useCart } from "react-use-cart";
 import { motion } from "framer-motion";
 import "../check/check.css";
 import axios from "axios";
-import { io } from "socket.io-client";
+import { Grid } from '@material-ui/core';
 import CurrencyFormat from "react-currency-format";
 import AddIcon from "@material-ui/icons/Add";
 import { message } from "antd";
@@ -121,9 +121,11 @@ function Bottomcart({ opens: isOpen, func: foobar, }) {
                                 marginLeft: "auto",
                                 marginTop: "auto",
                                 marginBottom: "5px",
-                            }}>     <h3 style={{
-                                color: "black", fontSize: "1.1rem",
-                            }}>
+                            }}>     <h3
+                                className="text-2xl"
+                                style={{
+                                    color: "black",
+                                }}>
                                     {" "}
                                     Summa:
                                     <CurrencyFormat
@@ -132,7 +134,9 @@ function Bottomcart({ opens: isOpen, func: foobar, }) {
                                         suffix=" sum"
                                         thousandSeparator={true}
                                         renderText={(value) => (
-                                            <span style={{ color: "#187CDF", fontSize: "1.1rem" }}>
+                                            <span
+                                                className="text-2xl"
+                                                style={{ color: "#187CDF", }}>
                                                 {value}
                                             </span>
                                         )}
@@ -162,7 +166,7 @@ function Bottomcart({ opens: isOpen, func: foobar, }) {
                             </div>
                         </div>
 
-                        <Divider />
+                        <Divider style={{ height: "2px" }} className="  bg-gray-900" />
 
                         <div className="mywrapperr" style={{ maxHeight: height, marginBottom: "70px" }}>
                             <div className="main" >
@@ -175,62 +179,72 @@ function Bottomcart({ opens: isOpen, func: foobar, }) {
                                             animate={{ x: anim }}
                                             className="productts"
                                         >
-                                            <div>
-                                                <p className="firstName">{item.name}</p>
+                                            <Grid container spacing={1} >
+                                                <Grid item xs={8} >
 
-                                                <CurrencyFormat
-                                                    value={item.price * item.quantity}
-                                                    displayType={"text"}
-                                                    suffix=" sum"
-                                                    thousandSeparator={true}
-                                                    renderText={(value) => (
-                                                        <motion.p className="secondName"> {value} </motion.p>
-                                                    )}
-                                                />
-                                            </div>
-                                            <div className="productss">
-                                                <motion.button
-                                                    className="pplus"
-                                                    onClick={() =>
-                                                        updateItemQuantity(item.id, item.quantity + 1)
-                                                    }
-                                                >
-                                                    <AddIcon fontSize="small" />
-                                                </motion.button>
-                                                <p className="quan">{item.quantity}</p>
-                                                <motion.button
-                                                    whileTap={{ scale: 1.1 }}
-                                                    className="pplus"
-                                                    onClick={() =>
-                                                        updateItemQuantity(item.id, item.quantity - 1)
-                                                    }
-                                                >
-                                                    <RemoveIcon fontSize="small" />
-                                                </motion.button>
-                                            </div>
+                                                    <div className="-mt-3">
+                                                        <p className="firstName">{item.name}</p>
+
+                                                        <CurrencyFormat
+                                                            value={item.price * item.quantity}
+                                                            displayType={"text"}
+                                                            suffix=" sum"
+                                                            thousandSeparator={true}
+                                                            renderText={(value) => (
+                                                                <motion.p className="secondName"> {value} </motion.p>
+                                                            )}
+                                                        />
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={4} >
+
+                                                    <div className="gap-2 flex absolute float-left flex-row flex-wrap flex-none w-full mr-auto">
+                                                        <span className="mb-auto">
+                                                            <motion.button
+                                                                className="pplus  h-8 w-8 "
+                                                                onClick={() =>
+                                                                    updateItemQuantity(item.id, item.quantity + 1)
+                                                                }
+                                                            >
+                                                                <AddIcon />
+                                                            </motion.button>
+                                                        </span>
+                                                        <span className="text-lg    -mt-1">
+                                                            <p >{item.quantity}</p>
+                                                        </span>
+                                                        <span className="  mb-auto">
+                                                            <motion.button
+                                                                className="pplus  h-8 w-8"
+                                                                whileTap={{ scale: 0.8 }}
+                                                                onClick={() =>
+                                                                    updateItemQuantity(item.id, item.quantity - 1)
+                                                                }
+                                                            >
+
+                                                                <RemoveIcon />
+                                                            </motion.button>
+                                                        </span>
+                                                    </div>
+                                                </Grid>
+                                            </Grid>
+
                                         </motion.div>
                                     </div>
                                 ))}
                             </div>
 
                             {/* Button stuff */}
-                            <Divider />
-                            <div>
-                                <div className="par">
+                            <div className='ml-20'>
 
-                                    <div className='paragraph'>
-
-                                    </div>
-                                    <motion.button
-                                        whileTap={{ scale: 1.1 }}
-                                        className="pl fixed"
-                                        onClick={handleCLicker}
-                                    >
-                                        Jonatish{" "}
-                                    </motion.button>
+                                <motion.button
+                                    whileTap={{ scale: 1.1 }}
+                                    className="pl fixed w-full center  m-auto"
+                                    onClick={handleCLicker}
+                                >
+                                    Jonatish{" "}
+                                </motion.button>
 
 
-                                </div>
 
 
                             </div>

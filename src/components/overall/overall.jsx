@@ -280,7 +280,7 @@ function Overall() {
               size="small"
               style={{ height: "25px", width: "50px" }}
               min="0"
-              max="100"
+              max="500  "
               onChange={(e) => setInputValue(parseInt(e))}
             />
           </div>
@@ -344,14 +344,16 @@ function Overall() {
                 </p>
               </div>
             </div>
-            <motion.button
-              whileTap={{ scale: 1.1 }}
-              className="pl"
-              style={{ marginTop: "60px" }}
-              onClick={showModal}
-            >
-              Pul tolandi
-            </motion.button>
+            <center>
+              <motion.button
+                whileTap={{ scale: 1.1 }}
+                className="pl w-10/12 m-auto"
+                style={{ marginTop: "60px" }}
+                onClick={showModal}
+              >
+                Pul tolandi
+              </motion.button>
+            </center>
             <Modal
               title="Parol"
               onOk={() => deleteObj(obj.table)}

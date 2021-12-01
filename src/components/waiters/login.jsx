@@ -15,9 +15,7 @@ function Login() {
         );
 
     };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
+
     return (
         <Container maxWidth="md" className="bg-gray-900  h-screen overflow-hidden"  >
             <div className="m-auto p-4 h-2 ">
@@ -30,7 +28,6 @@ function Login() {
                     wrapperCol={{ span: 16 }}
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
                     autoComplete="off"
                     size={"large"}
                     requiredMark={"optional"}

@@ -19,8 +19,6 @@ const Waiter = lazy(() => import("./components/waiters/waiters"));
 function AuthenticatedRoute({ roles, ...props }) {
   const { user } = useAuth();
 
-  if (!user) return <Redirect to="/login" />;
-
   return <Route {...props} />;
 }
 //TO DO

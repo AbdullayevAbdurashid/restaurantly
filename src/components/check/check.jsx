@@ -13,7 +13,6 @@ import { Modal } from "antd";
 import PlaylistAddCheckOutlinedIcon from '@material-ui/icons/PlaylistAddCheckOutlined';
 import { Link } from "react-router-dom";
 import { message } from "antd";
-import ButtonMain from "../button/buttonMain";
 import { Grid } from "@material-ui/core";
 import { IpContext } from "../../context/ipProvider"
 
@@ -105,7 +104,7 @@ function Check() {
       style={{ marginTop: "6px" }
       }
     >
-      <div className="mywrapperr" style={{ height: height }}>
+      <div className="mywrapperr h-screen z-0" >
         <div style={{ display: "flex" }}>
 
           <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Chek:</p>
@@ -128,7 +127,7 @@ function Check() {
           </div>
           <motion.div
             onClick={() => cartEmpty()}
-            whileTap={{ scale: 1.1 }}
+            whileTap={{ scale: 0.8 }}
             style={{
               fontSize: "14px",
               width: "80px",
@@ -153,7 +152,7 @@ function Check() {
 
         <Divider style={{ background: "blue" }} />
 
-        <div className="main" style={{ height: height }}>
+        <div className="main " style={{ height: height }}>
           {items.map((item) => (
             <div key={item.id} className="itemMain">
               <motion.div
@@ -184,13 +183,14 @@ function Check() {
 
                     <div className="gap-2 flex flex-row flex-wrap flex-none w-full mr-auto">
                       <span className="mb-auto">
-                        <ButtonMain
-                          styles="pplus  h-8 w-8 "
-                          content={<AddIcon />}
-                          onClicks={() =>
+                        <motion.button
+                          className="pplus  h-8 w-8 "
+                          onClick={() =>
                             updateItemQuantity(item.id, item.quantity + 1)
                           }
-                        />
+                        >
+                          <AddIcon />
+                        </motion.button>
                       </span>
                       <span className="text-lg    -mt-1">
                         <p >{item.quantity}</p>
@@ -239,11 +239,13 @@ function Check() {
             </h3>
           </div>
 
-          <ButtonMain
-            styles="pl"
-            onClicks={showModal}
-            content="Jonatish"
-          />
+          <motion.button
+            className="pl  center m-auto w-8/12"
+            onClick={showModal}
+            whileTap={{ scale: 0.9 }}
+          >
+            Jonatish
+          </motion.button>
 
         </div>
       </div >
