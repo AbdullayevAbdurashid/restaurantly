@@ -179,7 +179,6 @@ function Overall() {
       ),
     },
   ];
-
   //Function activated when clicked on button
   function filterTables() {
     let allOrders = {};
@@ -202,12 +201,16 @@ function Overall() {
           if (!allOrders[foodObj.name]) {
             allOrders[foodObj.name] = {
               q: foodObj.quantity,
+              id: foodObj._id,
+
               price: foodObj.price,
               allPrice: foodObj.price * foodObj.quantity,
             };
           } else {
             allOrders[foodObj.name].q =
               allOrders[foodObj.name].q + foodObj.quantity;
+            allOrders[foodObj.name].id =
+              allOrders[foodObj.name].id + foodObj.quantity;
             allOrders[foodObj.name].price =
               allOrders[foodObj.name].price + foodObj.price;
             allOrders[foodObj.name].allpPrice =
@@ -223,6 +226,7 @@ function Overall() {
         quantity: value.q,
         price: value.price,
         allprice: value.allPrice,
+        id: value.id
       };
     });
     allOrdersFromSingleTable.foods = allOrders;
@@ -249,138 +253,141 @@ function Overall() {
 
 
   return (
-    <Container maxWidth="sm">
-      <motion.div className="cheklist"
-        initial={{ y: -900 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+    <div>
+      <Container maxWidth="sm">
+        <motion.div className="cheklist"
+          initial={{ y: -900 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
 
-        <Link to="/">
-          <motion.button
-            whileTap={{ scale: 1.1 }}
-            className="filterButton"
-            style={{
-              marginLeft: "-140px",
-              height: "35px",
-              transform: "none",
-              texAlign: "center",
-            }}
-          >
-            <ArrowBackOutlinedIcon />
-          </motion.button>          </Link>
-        <div style={{ marginBottom: "20px", width: "100%", display: "flex" }}>
-
-          <div style={{ display: "flex", gap: "10px" }}>
-            <p style={{ fontSize: "16px" }}>Stol raqami: </p>
-            <InputNumber
-              placeholder={input}
-              defaultValue={input}
-              type="number"
-              size="small"
-              style={{ height: "25px", width: "50px" }}
-              min="0"
-              max="500  "
-              onChange={(e) => setInputValue(parseInt(e))}
-            />
-          </div>
-          <motion.button
-            whileTap={{ scale: 1.1 }}
-            className="filterButton"
-            onClick={() => {
-              filterTables();
-              setAnim(0);
-            }}
-          >
-            Izlash
-          </motion.button>
-        </div>
-        {table.map((obj, index) => (
-          <div>
-            <motion.div initial={{ x: 0 }} animate={{ x: anim }}>
-              <Table size="middle" columns={columns} dataSource={obj.foods} />
-            </motion.div>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "2px" }}
+          <Link to="/">
+            <motion.button
+              whileTap={{ scale: 1.1 }}
+              className="filterButton"
+              style={{
+                marginLeft: "-140px",
+                height: "35px",
+                transform: "none",
+                texAlign: "center",
+              }}
             >
-              <div style={{ display: "flex", gap: "20px" }}>
-                {" "}
-                <CurrencyFormat
-                  value={obj.money}
-                  displayType={"text"}
-                  suffix=" sum"
-                  thousandSeparator={true}
-                  renderText={(value) => (
-                    <p style={{ fontSize: "19px" }}>
-                      Jami: {" "}
-                      <span style={{ fontWeight: "bold", color: "#187CDF" }}>
-                        {value}
-                      </span>
-                    </p>
-                  )}
-                />
-                <p style={{ fontSize: "19px" }}>
-                  Usluga: {""}
-                  <span style={{ fontWeight: "bold", color: "#187CDF" }}>
-                    {service}%
-                  </span>
-                </p>
-              </div>
-              <div>
-                {" "}
-                <p style={{ fontSize: "22px" }}>
-                  Hammasi: {""}
+              <ArrowBackOutlinedIcon />
+            </motion.button>          </Link>
+          <div style={{ marginBottom: "20px", width: "100%", display: "flex" }}>
+
+            <div style={{ display: "flex", gap: "10px" }}>
+              <p style={{ fontSize: "16px" }}>Stol raqami: </p>
+              <InputNumber
+                placeholder={input}
+                defaultValue={input}
+                type="number"
+                size="small"
+                style={{ height: "25px", width: "50px" }}
+                min="0"
+                max="500  "
+                onChange={(e) => setInputValue(parseInt(e))}
+              />
+            </div>
+            <motion.button
+              whileTap={{ scale: 1.1 }}
+              className="filterButton"
+              onClick={() => {
+                filterTables();
+                setAnim(0);
+              }}
+            >
+              Izlash
+            </motion.button>
+          </div>
+          {table.map((obj, index) => (
+            <div>
+              <motion.div initial={{ x: 0 }} animate={{ x: anim }}>
+                <Table size="middle" columns={columns} dataSource={obj.foods} />
+              </motion.div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "2px" }}
+              >
+                <div style={{ display: "flex", gap: "20px" }}>
+                  {" "}
                   <CurrencyFormat
-                    value={Math.trunc(obj.money + (obj.money / 100) * service)}
+                    value={obj.money}
                     displayType={"text"}
                     suffix=" sum"
                     thousandSeparator={true}
                     renderText={(value) => (
-                      <span style={{ fontWeight: "bold", color: "#FF3131" }}>
-                        {value}
-                      </span>
+                      <p style={{ fontSize: "19px" }}>
+                        Jami: {" "}
+                        <span style={{ fontWeight: "bold", color: "#187CDF" }}>
+                          {value}
+                        </span>
+                      </p>
                     )}
                   />
-                </p>
+                  <p style={{ fontSize: "19px" }}>
+                    Usluga: {""}
+                    <span style={{ fontWeight: "bold", color: "#187CDF" }}>
+                      {service}%
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  {" "}
+                  <p style={{ fontSize: "22px" }}>
+                    Hammasi: {""}
+                    <CurrencyFormat
+                      value={Math.trunc(obj.money + (obj.money / 100) * service)}
+                      displayType={"text"}
+                      suffix=" sum"
+                      thousandSeparator={true}
+                      renderText={(value) => (
+                        <span style={{ fontWeight: "bold", color: "#FF3131" }}>
+                          {value}
+                        </span>
+                      )}
+                    />
+                  </p>
+                </div>
               </div>
-            </div>
-            <center>
-              <motion.button
-                whileTap={{ scale: 1.1 }}
-                className="pl w-10/12 m-auto"
-                style={{ marginTop: "60px" }}
-                onClick={showModal}
+              <center>
+                <motion.button
+                  whileTap={{ scale: 1.1 }}
+                  className="pl w-10/12 m-auto"
+                  style={{ marginTop: "60px" }}
+                  onClick={showModal}
+                >
+                  Pul tolandi
+                </motion.button>
+              </center>
+              <Modal
+                title="Parol"
+                onOk={() => deleteObj(obj.table)}
+                onCancel={() => setIsModalVisible(false)}
+                okText="Tasdiqlash"
+                cancelText="Orqaga"
+                visible={isModalVisible}
+                height={100}
               >
-                Pul tolandi
-              </motion.button>
-            </center>
-            <Modal
-              title="Parol"
-              onOk={() => deleteObj(obj.table)}
-              onCancel={() => setIsModalVisible(false)}
-              okText="Tasdiqlash"
-              cancelText="Orqaga"
-              visible={isModalVisible}
-              height={100}
-            >
-              <p>Parolni Kiriting</p>
+                <p>Parolni Kiriting</p>
 
-              {isIncorrect ? (
-                <h4 className="errorInput" style={{ color: "red" }}>
-                  Parol Notogri{" "}
-                </h4>
-              ) : null}
+                {isIncorrect ? (
+                  <h4 className="errorInput" style={{ color: "red" }}>
+                    Parol Notogri{" "}
+                  </h4>
+                ) : null}
 
-              <Input.Password
-                style={{ width: "300px" }}
-                onChange={(e) => setInputValues(e.target.value)}
-                placeholder="Parolni kiritng"
-              />
-            </Modal>
-          </div>
-        ))}
-      </motion.div>
+                <Input.Password
+                  style={{ width: "300px" }}
+                  onChange={(e) => setInputValues(e.target.value)}
+                  placeholder="Parolni kiritng"
+                />
+              </Modal>
+            </div>
+          ))}
+        </motion.div>
 
+
+      </Container >
       {isMobile ? (
         <BottomNavigation
           value={value}
@@ -396,7 +403,7 @@ function Overall() {
             icon={<HomeIcon />} />
         </BottomNavigation>
       ) : null}
-    </Container >
+    </div>
 
   );
 }

@@ -1,7 +1,8 @@
 import axios from "axios";
 
-export async function login(email, password) {
-    const response = await axios.post("http://localhost:4000/login", { session: email, password });
+export async function login(email, password, ip) {
+    console.log()
+    const response = await axios.post(`${email.ip}/login`, { session: email, password });
     return response.data;
 }
 

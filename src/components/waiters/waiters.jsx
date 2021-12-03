@@ -1,6 +1,17 @@
 import React from 'react'
-import { Container } from '@material-ui/core'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import clsx from 'clsx';
+
+
+//Antd
 import { Tabs } from 'antd';
+import { Badge as Fedge } from 'antd';
+import { Popconfirm, Modal } from 'antd';
+import { message } from 'antd';
+
+//Material Ui
+import { Container } from '@material-ui/core'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -8,26 +19,24 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from "@material-ui/core/Divider";
-import clsx from 'clsx';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import Badge from "@material-ui/core/Badge";
+import { Fab } from '@material-ui/core';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+
+//
 import useAuth from "../../context/useAuth"
 import backgound from "./back.jpg"
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { motion } from 'framer-motion';
-import Badge from "@material-ui/core/Badge";
-import { Badge as Fedge } from 'antd';
-
-import { Popconfirm } from 'antd';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import Grow from "@material-ui/core/Grow";
-import { message } from 'antd';
 import { IpContext } from "../../context/ipProvider"
 import { useContext } from 'react';
 import addNotification from 'react-push-notification';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Fab } from '@material-ui/core';
-import LazyLoad from 'react-lazyload';
+
+
 import { Redirect } from 'react-router';
+import { motion } from 'framer-motion';
+
+//Sounds
 import neworder from "./sounds/neworder.mp3"
 import complete from "./sounds/complete.mp3"
 import call from "./sounds/waitercalling.mp3"
@@ -66,7 +75,17 @@ const StyledBadge = withStyles((theme) => ({
     },
 }))(Badge);
 
-
+function info() {
+    Modal.info({
+        title: 'Please accept cookies',
+        content: (
+            <div>
+                <p>Accept cookies to send notification</p>
+            </div>
+        ),
+        onOk() { },
+    });
+}
 function Waiter() {
     const { user } = useAuth();
     const [ip, socket] = useContext(IpContext)
@@ -93,7 +112,15 @@ function Waiter() {
     const [expanded, setExpanded] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState(false);
     const notify = () => {
-        message.warning("Yangi zakaz bor")
+        let audio = new Audio(neworder)
+        audio.play()
+        addNotification({
+            title: 'Yangi zakaz',
+            subtitle: `Yangi zakaz keldi iltimos tekshiring`,
+            theme: 'darkblue',
+            native: true // when using native, your OS will handle theming.
+        });
+        message.warning("Yangi zakaz keldi iltimos tekshiring")
     }
     const notifySilent = () => {
         if (myorder.length === 0) {
@@ -109,15 +136,34 @@ function Waiter() {
             let audio = new Audio(complete)
             audio.play()
             message.success(`${table}chi stolni zakazi tayyor`)
-
+            addNotification({
+                title: 'Zakaz tayyor',
+                subtitle: `${table}chi stolni zakazi tayyor`,
+                theme: 'darkblue',
+                native: true // when using native, your OS will handle theming.
+            });
         }
     }
 
     const notifyWaiterCalling = (table, waiter) => {
         if (waiter === user) {
+            addNotification({
+                title: 'Sizni chaqirishyapti',
+                subtitle: `${table}- chi stol sizni chaqiryapti`,
+                theme: 'darkblue',
+                native: true // when using native, your OS will handle theming.
+            });
             let audio = new Audio(call)
             audio.play()
-            message.success(`${table}- chi stol sizni chaqiryapti`, 10000)
+            Modal.info({
+                title: 'Sizni chaqirishyapti',
+                content: (
+                    <div>
+                        <p>{table} - chi stol sizni chaqiryapti</p>
+                    </div>
+                ),
+                onOk() { },
+            });
             let duraction = setInterval(() => {
                 let audio = new Audio(call)
                 audio.play()
@@ -180,6 +226,7 @@ function Waiter() {
             setOrder(data);
 
         })();
+        info()
     }, []);
     const [confirmLoading, setConfirmLoading] = React.useState(false);
     const handleLogout = () => {
@@ -230,7 +277,7 @@ function Waiter() {
                                                 <h1 className="text-yellow-500 text-xl font-bold">
                                                     ORDER #{data.length - index}
                                                 </h1>
-                                                <h3 className="text-green-400 -mt-3  text-sm font-bold ">
+                                                <h3 className="text-green-400   text-sm font-bold ">
                                                     {(Number(obj.time.split(":")[0]) - new Date().getHours()) === 0 ? (new Date().getMinutes() - Number(obj.time.split(":")[1])) + " min oldin" : (new Date().getHours() - Number(obj.time.split(":")[0])) + " soat oldin"}                                             </h3>
                                                 <h2 className="absolute top-4 right-4  text-yellow-500 text-lg font-bold ">
                                                     Stol: {obj.table}
@@ -282,7 +329,7 @@ function Waiter() {
                                                             <div key={indx}>
                                                                 <span>
                                                                     <p className=" text-white text-xl  uppercase">{foodObj.name}</p>
-                                                                    <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
+                                                                    <Divider style={{ background: "white", }} /></span>
                                                                 <h2 className=" text-yellow-400 text-xl"> 2x </h2>
 
                                                             </div>
@@ -309,14 +356,14 @@ function Waiter() {
                                 myorder.map((obj, index) => (
 
                                     <Grow in={true}>
-                                        <Fedge.Ribbon color={obj.status === "pending" ? "volcano" : "green"} text={obj.status === "pending" ? "Not ready" : "Tayyor  "}>
+                                        <Fedge.Ribbon color={obj.status === "pending" ? "volcano" : "green"} text={obj.status === "pending" ? "Tayyor emas" : "Tayyor  "}>
 
                                             <Card className="mb-4">
                                                 <CardContent>
                                                     <h1 className="text-yellow-500 text-xl font-bold">
                                                         ORDER #{myorder.length - index}
                                                     </h1>
-                                                    <h3 className=" text-green-400 -mt-3  text-sm font-bold ">
+                                                    <h3 className=" text-green-400 text-sm font-bold ">
                                                         {(Number(obj.time.split(":")[0]) - new Date().getHours()) === 0 ? (new Date().getMinutes() - Number(obj.time.split(":")[1])) + " min oldin" : (new Date().getHours() - Number(obj.time.split(":")[0])) + " soat oldin"}                                                                             </h3>
                                                     <h2 className="absolute bottom-6 right-4  text-yellow-500 text-lg font-bold ">
                                                         Stol: {obj.table}
@@ -356,7 +403,7 @@ function Waiter() {
                                                                 <div key={indx}>
                                                                     <span>
                                                                         <p className=" text-white text-xl  uppercase">{foodObj.name}</p>
-                                                                        <Divider style={{ background: "white", marginTop: "-20px" }} /></span>
+                                                                        <Divider style={{ background: "white", }} /></span>
                                                                     <h2 className=" text-yellow-400 text-xl"> 2x </h2>
 
                                                                 </div>

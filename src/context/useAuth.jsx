@@ -8,7 +8,7 @@ import React, {
 import { useHistory } from "react-router-dom";
 import * as sessionsApi from "../api/sessions";
 import * as usersApi from "../api/users";
-
+import { IpContext } from "./ipProvider";
 
 const AuthContext = createContext(
     {
@@ -27,6 +27,8 @@ export function AuthProvider({
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
     const [loadingInitial, setLoadingInitial] = useState(true);
+    const [ip] = useContext(IpContext)
+
     // We are using `react-router` for this example,
     // but feel free to omit this or use the
     // router of your choice.
@@ -59,10 +61,10 @@ export function AuthProvider({
     //
     // Finally, just signal the component that loading the
     // loading state is over.
-    function login(email, password) {
+    function login(email, password,) {
         setLoading(true);
 
-        sessionsApi.login({ email, password })
+        sessionsApi.login({ email, password, ip })
             .then((res) => {
                 localStorage.setItem("details", res.loginName)
                 setUser(localStorage.getItem("details"));

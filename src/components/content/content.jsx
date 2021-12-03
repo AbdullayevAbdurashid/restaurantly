@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useContext } from "react";
 import "antd/dist/antd.css";
 import Skeleton from "@material-ui/lab/Skeleton";
-import { Radio } from "antd";
+import { Radio, Image } from "antd";
 import placeholder from "./placeholder.png";
 import "./content.css";
 import { useCart } from "react-use-cart";
@@ -57,7 +57,7 @@ function Content({ data, loading }) {
 
       } else {
         setTimeout(() => {
-          message.error("Ofitsiantlar hozir band, iltimos qayta uruning", 4000)
+          message.error("Ofitsiantlar hozir band, iltimos qayta uruning yoki buuyurtma qilib", 4000)
           setConfirmLoading(false);
           setVisible(false);
         }, 6000);
@@ -95,7 +95,7 @@ function Content({ data, loading }) {
         {keys &&
           keys.map((key, indx) => (
             <TabPane tab={key} key={indx}>
-              <LazyLoad overflow={true} once={true}>
+              <LazyLoad once={true}>
                 <div>
                   <div
                     key={indx}
@@ -116,22 +116,18 @@ function Content({ data, loading }) {
 
                                 in={true}
                                 unmountOnExit>
-                                <Card className="min-h-90">
+                                <Card style={{ display: obj.isAvailable === 34 ? "none" : "block" }} className="min-h-90">
                                   <div
 
                                   >
-                                    <CardMedia
-                                      component="img"
-                                      alt="Ovqat"
-                                      className="h-32"
-                                      image={
-                                        obj.productImage === "null" ||
-                                          !obj.productImage
-                                          ? placeholder
-                                          : `${ip}/` +
-                                          obj.productImage
-                                      }
+                                    <Image
+                                      width="100%"
+                                      height="8rem"
+                                      className="object-cover"
+                                      src={obj.productImage ? `${ip}/` +
+                                        obj.productImage : placeholder}
                                     />
+
                                     <CardContent>
                                       <div className="relative ml-auto ">
                                         <motion.button

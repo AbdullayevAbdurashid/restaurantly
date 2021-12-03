@@ -12,6 +12,9 @@
 li {
   list-style: none;
 }
+.filterButton {
+  padding: 10px;
+}
 .cotegory {
   font-size: 18px;
   text-transform: uppercase;
@@ -72,7 +75,6 @@ li {
 }
 .secondName {
   font-size: inherit !important;
-  margin-top: -20px;
   color: #1948f0;
 }
 .quan {
@@ -139,15 +141,19 @@ li {
 }
 
 .waiters .MuiCard-root {
+  position: relative;
   color: white;
-  box-shadow: 0 8px 32px 0 rgb(31 38 135 / 37%) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
   background-color: rgba(15, 24, 59, 0.877) !important;
   border-radius: 12px;
-  padding: 0px;
   border: 2px solid rgba(18, 58, 218, 0.877) !important;
 }
 .waiters .MuiCardContent-root {
   padding: 8px;
+}
+.load {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }

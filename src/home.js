@@ -131,7 +131,7 @@ function Home() {
             />
             <BottomNavigationAction
               onClick={() => history.push("/check")}
-              label="Buyurtmalar tarixi"
+              label="Buyurtmalar"
               icon={<RestoreIcon />}
             />
           </BottomNavigation>
