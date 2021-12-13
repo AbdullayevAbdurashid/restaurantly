@@ -48,16 +48,15 @@ function Content({ data, loading }) {
   const handleOk = () => {
     socket.emit("call-waiter", sessionStorage.getItem("table"))
     setConfirmLoading(true);
-
     socket.on("coming", ({ responsibleWaiter }) => {
       if (responsibleWaiter !== "none") {
-        message.success("Ofitsiant kelyapti")
+        message.success("Официант идёт")
         setConfirmLoading(false);
         setVisible(false);
 
       } else {
         setTimeout(() => {
-          message.error("Ofitsiantlar hozir band, iltimos qayta uruning yoki buuyurtma qilib", 4000)
+          message.error("Официанты заняты попробуйте ещё или сделайте заказ", 2000)
           setConfirmLoading(false);
           setVisible(false);
         }, 6000);
@@ -78,8 +77,9 @@ function Content({ data, loading }) {
     <div
     >
       <Popconfirm
-        title="Ofitsiantni chaqrilaylikmi?"
+        title="Вызвать официанта?"
         visible={visible}
+        placement="leftBottom"
         onConfirm={handleOk}
         okButtonProps={{ loading: confirmLoading }}
         onCancel={handleCancel}

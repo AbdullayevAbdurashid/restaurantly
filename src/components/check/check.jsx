@@ -31,6 +31,7 @@ function Check() {
     items,
     updateItemQuantity,
     emptyCart,
+    addItem
   } = useCart();
 
   //Refs and states
@@ -42,7 +43,7 @@ function Check() {
   };
 
   //Sending data to server to orders page
-  const setPosst = () => {
+  const setPost = () => {
     socket.emit("post-order", {
       table: input,
       money: cartTotal,
@@ -52,30 +53,20 @@ function Check() {
   };
   //Sending data to server to stats page
 
-  const setPost = () => {
-    axios({
-      method: "post",
-      url: `${ip}/status`,
-      data: {
-        date: date,
-        money: cartTotal,
-      },
-    });
-  };
+
   //Tracking click of end order vutton
   const handleCLicker = () => {
     if (isEmpty === false) {
       if (input !== "null" || null) {
         setAnim(1600);
         setTimeout(function () {
-          setPosst();
           setPost();
           emptyCart(); // runs first
           setAnim(0); // runs second
           setIsModalVisible(false);
         }, 1000);
       } else {
-        message.error("QR CODNI QAYTA SKANER QILISNG");
+        message.error("ПЕРЕСКАНИРУЙТЕ QR КОД ");
       }
     }
   };
@@ -94,10 +85,7 @@ function Check() {
   };
   const height = window.innerHeight - 205 + "px";
 
-  //Taking date
-  let newDate = new Date();
-  let month = newDate.getMonth() + 1;
-  let date = newDate.getDate() + "/" + month + "/" + newDate.getFullYear();
+
   return (
 
     <div
@@ -107,7 +95,7 @@ function Check() {
       <div className="mywrapperr h-screen z-0" >
         <div style={{ display: "flex" }}>
 
-          <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Chek:</p>
+          <p style={{ fontSize: "22px", marginBottom: "0px", margin: "0px auto", }}>Чек:</p>
           <Link to="/check">
 
             <Button type="dashed" shape="" icon={<PlaylistAddCheckOutlinedIcon />} >
@@ -224,7 +212,7 @@ function Check() {
               color: "black", fontSize: "24px", margin: "auto",
             }}>
               {" "}
-              Jami:
+              Всего:
               <CurrencyFormat
                 value={cartTotal}
                 displayType={"text"}
@@ -244,13 +232,13 @@ function Check() {
             onClick={showModal}
             whileTap={{ scale: 0.9 }}
           >
-            Jonatish
+            Отправить
           </motion.button>
 
         </div>
       </div >
       <Modal
-        title="Tasdiqlash"
+        title="Подтверждения?"
         onOk={handleCLicker}
         onCancel={() => setIsModalVisible(false)}
         okText="Ha"
@@ -258,7 +246,7 @@ function Check() {
         visible={isModalVisible}
         height={100}
       >
-        <p>Tasdiqlaysizmi?</p>
+        <p>Подтвердить?</p>
       </Modal>
     </div >
 

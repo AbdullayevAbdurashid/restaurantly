@@ -5,7 +5,7 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Container from "@material-ui/core/Container";
 import { motion } from "framer-motion";
-import { Modal, Input, Table, InputNumber } from "antd";
+import {Table, InputNumber } from "antd";
 import CurrencyFormat from "react-currency-format";
 import { Link } from "react-router-dom";
 import ArrowBackOutlinedIcon from '@material-ui/icons/ArrowBackOutlined';
@@ -48,19 +48,8 @@ function Overall() {
   const [data, setData] = useState([]);
   const [table, setsingleTable] = useState([false]);
   const [inputValue, setInputValue] = useState(parseInt(input));
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [inputValues, setInputValues] = useState(input);
-  const [isIncorrect, setIncorrect] = useState(false);
-  const [anim, setAnim] = useState(0);
+  
   const [value, setValue] = useState();
-
-  //Local password that changes   
-  const password = "admin2020";
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
 
   //Getting order list when page loaded
   useEffect(() => {
@@ -132,13 +121,13 @@ function Overall() {
   //table columns array
   const columns = [
     {
-      title: "Name",
+      title: "Названия",
       dataIndex: "name",
       key: "name",
       render: (text) => <p>{text}</p>,
     },
     {
-      title: "Narxi",
+      title: "Цена",
       dataIndex: "price",
       key: "price",
       render: (value) => (
@@ -155,12 +144,12 @@ function Overall() {
       ),
     },
     {
-      title: "Soni",
+      title: "Кол-во",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "Summa",
+      title: "Сумма",
       dataIndex: "allprice",
       key: "allPrice",
       render: (value) => (
@@ -233,25 +222,6 @@ function Overall() {
     // allOrdersFromSingleTable is what u should print
     setsingleTable([allOrdersFromSingleTable]);
   }
-
-
-  //End order button action
-  const deleteObj = (id) => {
-    if (inputValues === password) {
-      socket.emit("done-order", id);
-      setIsModalVisible(false);
-
-      setTimeout(() => {
-        setAnim(1800);
-        window.location.reload(true);
-
-      }, 1000);
-    } else {
-      setIncorrect(true);
-    }
-  };
-
-
   return (
     <div>
       <Container maxWidth="sm">
@@ -294,15 +264,15 @@ function Overall() {
               className="filterButton"
               onClick={() => {
                 filterTables();
-                setAnim(0);
+          
               }}
             >
-              Izlash
+              Поиск
             </motion.button>
           </div>
           {table.map((obj, index) => (
             <div>
-              <motion.div initial={{ x: 0 }} animate={{ x: anim }}>
+              <motion.div initial={{ x: 0 }}>
                 <Table size="middle" columns={columns} dataSource={obj.foods} />
               </motion.div>
               <div
@@ -317,7 +287,7 @@ function Overall() {
                     thousandSeparator={true}
                     renderText={(value) => (
                       <p style={{ fontSize: "19px" }}>
-                        Jami: {" "}
+                        Всего: {" "}
                         <span style={{ fontWeight: "bold", color: "#187CDF" }}>
                           {value}
                         </span>
@@ -325,7 +295,7 @@ function Overall() {
                     )}
                   />
                   <p style={{ fontSize: "19px" }}>
-                    Usluga: {""}
+                    Услуга: {""}
                     <span style={{ fontWeight: "bold", color: "#187CDF" }}>
                       {service}%
                     </span>
@@ -334,7 +304,7 @@ function Overall() {
                 <div>
                   {" "}
                   <p style={{ fontSize: "22px" }}>
-                    Hammasi: {""}
+                    С услогой: {""}
                     <CurrencyFormat
                       value={Math.trunc(obj.money + (obj.money / 100) * service)}
                       displayType={"text"}
@@ -349,39 +319,8 @@ function Overall() {
                   </p>
                 </div>
               </div>
-              <center>
-                <motion.button
-                  whileTap={{ scale: 1.1 }}
-                  className="pl w-10/12 m-auto"
-                  style={{ marginTop: "60px" }}
-                  onClick={showModal}
-                >
-                  Pul tolandi
-                </motion.button>
-              </center>
-              <Modal
-                title="Parol"
-                onOk={() => deleteObj(obj.table)}
-                onCancel={() => setIsModalVisible(false)}
-                okText="Tasdiqlash"
-                cancelText="Orqaga"
-                visible={isModalVisible}
-                height={100}
-              >
-                <p>Parolni Kiriting</p>
-
-                {isIncorrect ? (
-                  <h4 className="errorInput" style={{ color: "red" }}>
-                    Parol Notogri{" "}
-                  </h4>
-                ) : null}
-
-                <Input.Password
-                  style={{ width: "300px" }}
-                  onChange={(e) => setInputValues(e.target.value)}
-                  placeholder="Parolni kiritng"
-                />
-              </Modal>
+           
+              
             </div>
           ))}
         </motion.div>

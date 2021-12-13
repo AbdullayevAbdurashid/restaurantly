@@ -232,7 +232,6 @@ function Waiter() {
     const handleLogout = () => {
         localStorage.setItem("details", "false")
         window.location.reload();
-
     }
     const classes = useStyles();
     const handleOk = (table) => {
@@ -356,64 +355,62 @@ function Waiter() {
                                 myorder.map((obj, index) => (
 
                                     <Grow in={true}>
-                                        <Fedge.Ribbon color={obj.status === "pending" ? "volcano" : "green"} text={obj.status === "pending" ? "Tayyor emas" : "Tayyor  "}>
 
-                                            <Card className="mb-4">
-                                                <CardContent>
-                                                    <h1 className="text-yellow-500 text-xl font-bold">
-                                                        ORDER #{myorder.length - index}
-                                                    </h1>
-                                                    <h3 className=" text-green-400 text-sm font-bold ">
-                                                        {(Number(obj.time.split(":")[0]) - new Date().getHours()) === 0 ? (new Date().getMinutes() - Number(obj.time.split(":")[1])) + " min oldin" : (new Date().getHours() - Number(obj.time.split(":")[0])) + " soat oldin"}                                                                             </h3>
-                                                    <h2 className="absolute bottom-6 right-4  text-yellow-500 text-lg font-bold ">
-                                                        Stol: {obj.table}
-                                                    </h2>
+                                        <Card className="mb-4">
+                                            <CardContent>
+                                                <h1 className="text-yellow-500 text-xl font-bold">
+                                                    ORDER #{myorder.length - index}
+                                                </h1>
+                                                <h3 className=" text-green-400 text-sm font-bold ">
+                                                    {(Number(obj.time.split(":")[0]) - new Date().getHours()) === 0 ? (new Date().getMinutes() - Number(obj.time.split(":")[1])) + " min oldin" : (new Date().getHours() - Number(obj.time.split(":")[0])) + " soat oldin"}                                                                             </h3>
+                                                <h2 className="absolute bottom-6 right-4  text-yellow-500 text-lg font-bold ">
+                                                    Stol: {obj.table}
+                                                </h2>
 
-                                                    <h3 className="text-white text-lg font-medium">
-                                                        Jami taomlar:{myorder[index].foods.length}
-                                                    </h3>
+                                                <h3 className="text-white text-lg font-medium">
+                                                    Jami taomlar:{myorder[index].foods.length}
+                                                </h3>
 
-                                                </CardContent>
-                                                <CardActions disableSpacing>
+                                            </CardContent>
+                                            <CardActions disableSpacing>
 
-                                                    <h3 className="text-white text-lg font-medium">
-                                                        Taomlar:
-                                                    </h3>
-                                                    <span className="inline-block">
-                                                        <IconButton
-                                                            className={clsx(classes.expand, {
-                                                                [classes.expandOpen]: expanded[index]
-                                                                    ? expanded[index] : null,
-                                                            })}
-                                                            onClick={() => handleExpandOrder(index)}
-                                                            aria-expanded={expanded}
-                                                            aria-label="show more"
-                                                        >
-                                                            <ExpandMoreIcon className="text-white  mb-1" fontSize="large" />
-                                                        </IconButton>
+                                                <h3 className="text-white text-lg font-medium">
+                                                    Taomlar:
+                                                </h3>
+                                                <span className="inline-block">
+                                                    <IconButton
+                                                        className={clsx(classes.expand, {
+                                                            [classes.expandOpen]: expanded[index]
+                                                                ? expanded[index] : null,
+                                                        })}
+                                                        onClick={() => handleExpandOrder(index)}
+                                                        aria-expanded={expanded}
+                                                        aria-label="show more"
+                                                    >
+                                                        <ExpandMoreIcon className="text-white  mb-1" fontSize="large" />
+                                                    </IconButton>
 
-                                                    </span>
-                                                </CardActions>
-                                                <Collapse in={expandedOrder[index]
-                                                    ? expandedOrder[index] : null
-                                                } timeout="auto" unmountOnExit>
-                                                    {
-                                                        myorder[index].foods.map((foodObj, indx) => (
-                                                            <CardContent>
-                                                                <div key={indx}>
-                                                                    <span>
-                                                                        <p className=" text-white text-xl  uppercase">{foodObj.name}</p>
-                                                                        <Divider style={{ background: "white", }} /></span>
-                                                                    <h2 className=" text-yellow-400 text-xl"> 2x </h2>
+                                                </span>
+                                            </CardActions>
+                                            <Collapse in={expandedOrder[index]
+                                                ? expandedOrder[index] : null
+                                            } timeout="auto" unmountOnExit>
+                                                {
+                                                    myorder[index].foods.map((foodObj, indx) => (
+                                                        <CardContent>
+                                                            <div key={indx}>
+                                                                <span>
+                                                                    <p className=" text-white text-xl  uppercase">{foodObj.name}</p>
+                                                                    <Divider style={{ background: "white", }} /></span>
+                                                                <h2 className=" text-yellow-400 text-xl"> {foodObj.quantity}x </h2>
 
-                                                                </div>
+                                                            </div>
 
 
-                                                            </CardContent>
-                                                        ))}
-                                                </Collapse>
-                                            </Card>
-                                        </Fedge.Ribbon>
+                                                        </CardContent>
+                                                    ))}
+                                            </Collapse>
+                                        </Card>
                                     </Grow>
                                 ))}
 
