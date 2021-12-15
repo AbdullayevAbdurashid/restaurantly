@@ -128,6 +128,7 @@ function Admin() {
                 [record.id]: e,
               }))
             }
+            
           />
           <IconButton onClick={() => deleteItems(record)}>
             <Delete fontSize="medium" />
@@ -136,10 +137,9 @@ function Admin() {
       ),
     },
   ];
-
   function removeFoods() {
     axios
-      .post(`http://localhost:4000/reduce`, reduce)
+      .post(`${ip}/reduce`, reduce)
       .then(window.location.reload());
   }
   //Deleting items and sending to server
@@ -149,13 +149,13 @@ function Admin() {
         tableNum: inputValues,
         pr: [
           ...prevState.pr,
-          { name: records.name, quantity: value[records.id] },
+          {  name: records.name, quantity: value[records.id] },
         ],
       }));
       setIsModalVisible({ modal: true });
     }
   }
-
+console.log(reduce)
   //Function activated when clicked on button to filter according to table
   function filterTables() {
     let allOrders = {};
@@ -242,7 +242,7 @@ function Admin() {
       },
     });
   };
-
+  
   return (
     <div>
       <Container maxWidth="sm">

@@ -25,6 +25,8 @@ const useStyles = makeStyles({
     zIndex: "2",
     width: "100%",
     position: "fixed",
+    marginTop:"10px",
+borderTop:"1px solid gray",
     bottom: 0,
   },
   root: {
@@ -54,7 +56,8 @@ function Home() {
   const [opens, setOpens] = useState(false);
 
   const [count, setCount] = useState(totalItems);
-
+  const [animation, setAnimation] = useState("");
+console.log(animation)
   useEffect(() => {
     setLoading(true);
     const query = new URLSearchParams(window.location.search);
@@ -82,13 +85,21 @@ function Home() {
         style={{ marginTop: "200px" }}
       />
     );
-
+const Animate = () =>{
+  setCount(count + 1)
+  setAnimation("animated")
+  setTimeout(() => {
+    setAnimation("")
+  }, 2500);
+  
+}
   return (
     <div>
       <CartProvider
-        onItemAdd={() => setCount(count + 1)}
-        onItemUpdate={() => setCount(count + 1)}
-        onItemRemove={() => setCount(count - 1)}
+        onItemAdd={Animate}
+        onItemUpdate={Animate}
+        onItemRemove={ ()=> setCount(count - 1)
+        }
       >
         <MobileView>
           <Bottomcart opens={opens} func={setOpens} />
@@ -125,7 +136,7 @@ function Home() {
               label="Savatcha"
               icon={
                 <StyledBadge showZero badgeContent={count} color="secondary">
-                  <ShoppingCartIcon />
+                  <ShoppingCartIcon  className={animation}/>
                 </StyledBadge>
               }
             />

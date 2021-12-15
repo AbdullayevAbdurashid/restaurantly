@@ -157,3 +157,25 @@ li {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+.animated {
+  transition: 1s;
+  color:red;
+  animation: shake  1s ease-in-out forwards;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes shake {
+  25% {
+    transform:translateX(6px)
+  }
+  50% {
+    transform:translateX(-4px);
+  }
+  75% {
+    transform:translateX(2px);
+  }
+  100% {
+    transform:translateX(0);
+  }
+}

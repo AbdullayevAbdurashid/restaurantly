@@ -91,11 +91,12 @@ function Content({ data, loading }) {
 
       <Tabs type="card"
         unmountInactiveTabs={true}
-        size={"large"}>
+        size={"large"}
+        
+        >
         {keys &&
           keys.map((key, indx) => (
             <TabPane tab={key} key={indx}>
-              <LazyLoad once={true}>
                 <div>
                   <div
                     key={indx}
@@ -103,14 +104,12 @@ function Content({ data, loading }) {
                     style={{
 
                       padding: "10px",
-                      marginBottom: "70PX",
                     }}
                   >
                     <Grid container spacing={2}>
                       {data &&
                         data[key].map(({ _id: id, ...obj }, index) => (
                           <Grid item xs={6} sm={6} md={4} lg={3}>
-                            <LazyLoad once={true}>
 
                               <Grow
 
@@ -224,13 +223,11 @@ function Content({ data, loading }) {
                                   </CardActions>
                                 </Card>
                               </Grow>
-                            </LazyLoad>
                           </Grid>
                         ))}
                     </Grid>
                   </div>
                 </div>
-              </LazyLoad>
             </TabPane>
           ))}
 
