@@ -11,9 +11,6 @@ export const IpContext = createContext();
 export function IPprovider({
     children,
 }) {
-
-
-
     return (
         <IpContext.Provider value={[ip, socket]}>
             {children}
