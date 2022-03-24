@@ -12,23 +12,23 @@ import { Tabs } from "antd";
 import LazyLoad from "react-lazyload";
 import { motion } from "framer-motion";
 //MUI
-import Fab from '@material-ui/core/Fab';
+import Fab from "@material-ui/core/Fab";
 
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from "@material-ui/icons/Add";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import Grow from "@material-ui/core/Grow";
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 //Others
-import { IpContext } from "../../context/ipProvider"
-import { Popconfirm } from 'antd';
+import { IpContext } from "../../context/ipProvider";
+import { Popconfirm } from "antd";
 import { message } from "antd";
 function Content({ data, loading }) {
   const { TabPane } = Tabs;
-  const [ip, socket] = useContext(IpContext)
+  const [ip, socket] = useContext(IpContext);
   const [quality, setQuality] = useState({});
   const [pricer, setPrice] = useState({});
   const [visible, setVisible] = React.useState(false);
@@ -40,29 +40,29 @@ function Content({ data, loading }) {
     addItem(obj);
   };
 
-
   const showPopconfirm = () => {
     setVisible(true);
   };
 
   const handleOk = () => {
-    socket.emit("call-waiter", sessionStorage.getItem("table"))
+    socket.emit("call-waiter", sessionStorage.getItem("table"));
     setConfirmLoading(true);
     socket.on("coming", ({ responsibleWaiter }) => {
       if (responsibleWaiter !== "none") {
-        message.success("Официант идёт")
+        message.success("Официант идёт");
         setConfirmLoading(false);
         setVisible(false);
-
       } else {
         setTimeout(() => {
-          message.error("Официанты заняты попробуйте ещё или сделайте заказ", 2000)
+          message.error(
+            "Официанты заняты попробуйте ещё или сделайте заказ",
+            2000
+          );
           setConfirmLoading(false);
           setVisible(false);
         }, 6000);
       }
     });
-
   };
 
   const handleCancel = () => {
@@ -74,8 +74,7 @@ function Content({ data, loading }) {
     setQuality({ ...quality, [id]: quality });
   };
   return (
-    <div
-    >
+    <div>
       <Popconfirm
         title="Вызвать официанта?"
         visible={visible}
@@ -84,150 +83,159 @@ function Content({ data, loading }) {
         okButtonProps={{ loading: confirmLoading }}
         onCancel={handleCancel}
       >
-        <Fab color="primary" onClick={showPopconfirm} style={{ position: "fixed", bottom: "80px", right: "10px ", zIndex: "9999999" }} aria-label="add">
+        <Fab
+          color="primary"
+          onClick={showPopconfirm}
+          style={{
+            position: "fixed",
+            bottom: "80px",
+            right: "10px ",
+            zIndex: "9999999",
+          }}
+          aria-label="add"
+        >
           <NotificationsActiveIcon />
         </Fab>
       </Popconfirm>
 
-      <Tabs type="card"
-        unmountInactiveTabs={true}
-        size={"large"}
-        
-        >
+      <Tabs type="card" unmountInactiveTabs={true} size={"large"}>
         {keys &&
           keys.map((key, indx) => (
             <TabPane tab={key} key={indx}>
-                <div>
-                  <div
-                    key={indx}
-                    className="h-screen mywrapper"
-                    style={{
-
-                      padding: "10px",
-                    }}
+              <div>
+                <div
+                  key={indx}
+                  className="h-screen mywrapper"
+                  style={{
+                    padding: "10px",
+                  }}
+                >
+                  <Grid
+                    container
+                    alignItems="stretch"
+                    justifyContent="flex-start"
+                    spacing={2}
+                    direction="row"
                   >
-                    <Grid container spacing={2}>
-                      {data &&
-                        data[key].map(({ _id: id, ...obj }, index) => (
-                          <Grid item xs={6} sm={6} md={4} lg={3}>
+                    {data &&
+                      data[key].map(({ _id: id, ...obj }, index) => (
+                        <Grid item xs={6} sm={6} md={4} lg={3}>
+                          <Grow in={true} unmountOnExit>
+                            <Card
+                              style={{
+                                display:
+                                  obj.isAvailable === 34 ? "none" : "block",
+                              }}
+                              className="min-h-90"
+                            >
+                              <div>
+                                <Image
+                                  width="100%"
+                                  height="8rem"
+                                  className="object-cover"
+                                  src={
+                                    obj.productImage
+                                      ? `${ip}/` + obj.productImage
+                                      : placeholder
+                                  }
+                                />
 
-                              <Grow
+                                <CardContent>
+                                  <div className="relative ml-auto ">
+                                    <motion.button
+                                      whileTap={{ scale: 0.9 }}
+                                      className="pplus absolute -right-2 -top-10  h-10 w-10 bg-red-100"
+                                      onClick={() => {
+                                        let temprice = pricer[id]
+                                          ? pricer[id]
+                                          : "obj.price";
+                                        let price = eval(temprice);
+                                        let qual = quality[id]
+                                          ? quality[id]
+                                          : "1";
 
-                                in={true}
-                                unmountOnExit>
-                                <Card style={{ display: obj.isAvailable === 34 ? "none" : "block" }} className="min-h-90">
-                                  <div
+                                        let tempObj = {
+                                          id: id + "quality" + qual,
+                                          quality: qual,
+                                          name: obj.name + " " + qual,
+                                          price: price,
+                                          productImage: obj.productImage,
+                                        };
 
-                                  >
-                                    <Image
-                                      width="100%"
-                                      height="8rem"
-                                      className="object-cover"
-                                      src={obj.productImage ? `${ip}/` +
-                                        obj.productImage : placeholder}
-                                    />
-
-                                    <CardContent>
-                                      <div className="relative ml-auto ">
-                                        <motion.button
-                                          whileTap={{ scale: 0.9 }}
-                                          className="pplus absolute -right-2 -top-10  h-10 w-10 bg-red-100"
-                                          onClick={() => {
-
-                                            let temprice = pricer[id]
-                                              ? pricer[id]
-                                              : "obj.price";
-                                            let price = eval(temprice);
-                                            let qual = quality[id] ? quality[id] : "1";
-
-                                            let tempObj = {
-                                              id: id + "quality" + qual,
-                                              quality: qual,
-                                              name: obj.name + " " + qual,
-                                              price: price,
-                                              productImage: obj.productImage,
-                                            };
-
-                                            addCart(tempObj);
-                                          }}
-                                        >
-                                          <AddIcon fontSize="medium" />
-                                        </motion.button></div>
-                                      <Typography
-                                        gutterBottom
-                                        variant="h6"
-                                        component="h3"
-                                      >
-                                        {obj.name}
-                                      </Typography>
-                                      <CurrencyFormat
-                                        value={
-                                          pricer[id]
-                                            ? eval(pricer[id])
-                                            : obj.price
-                                        }
-                                        displayType={"text"}
-                                        suffix=" sum"
-                                        thousandSeparator={true}
-                                        renderText={(value) => (
-                                          <p
-                                            className="secondName"
-                                            style={{ marginTop: "1px" }}
-                                          >
-                                            {value}{" "}
-                                          </p>
-                                        )}
-                                      />
-
-                                      <Typography
-                                        variant="body2"
-                                        color="textSecondary"
-                                        component="p"
-                                      >
-                                        {obj.description}
-                                      </Typography>
-                                    </CardContent>
-                                  </div>
-                                  <CardActions>
-                                    <Radio.Group
-                                      defaultValue="obj.price"
-                                      size="medium"
+                                        addCart(tempObj);
+                                      }}
                                     >
-                                      <Radio.Button
-                                        onClick={(e) => handleChange(e, "1", id)}
-                                        disabled={obj.price ? false : true}
-                                        value="obj.price"
+                                      <AddIcon fontSize="medium" />
+                                    </motion.button>
+                                  </div>
+                                  <Typography
+                                    gutterBottom
+                                    variant="h6"
+                                    component="h3"
+                                  >
+                                    {obj.name}
+                                  </Typography>
+                                  <CurrencyFormat
+                                    value={
+                                      pricer[id] ? eval(pricer[id]) : obj.price
+                                    }
+                                    displayType={"text"}
+                                    suffix=" sum"
+                                    thousandSeparator={true}
+                                    renderText={(value) => (
+                                      <p
+                                        className="secondName"
+                                        style={{ marginTop: "1px" }}
                                       >
-                                        1.0
-                                      </Radio.Button>
-                                      <Radio.Button
-                                        disabled={obj.price05 ? false : true}
-                                        onClick={(e) =>
-                                          handleChange(e, "0.5", id)
-                                        }
-                                        value="obj.price05"
-                                      >
-                                        0.5
-                                      </Radio.Button>
-                                      <Radio.Button
-                                        disabled={obj.price07 ? false : true}
-                                        onClick={(e) =>
-                                          handleChange(e, "0.7", id)
-                                        }
-                                        value="obj.price07"
-                                      >
-                                        0.7
-                                      </Radio.Button>
-                                    </Radio.Group>
+                                        {value}{" "}
+                                      </p>
+                                    )}
+                                  />
 
-                                  </CardActions>
-                                </Card>
-                              </Grow>
-                          </Grid>
-                        ))}
-                    </Grid>
-                  </div>
+                                  <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                    component="p"
+                                  >
+                                    {obj.description}
+                                  </Typography>
+                                </CardContent>
+                              </div>
+                              <CardActions>
+                                <Radio.Group
+                                  defaultValue="obj.price"
+                                  size="medium"
+                                >
+                                  <Radio.Button
+                                    onClick={(e) => handleChange(e, "1", id)}
+                                    disabled={obj.price ? false : true}
+                                    value="obj.price"
+                                  >
+                                    1.0
+                                  </Radio.Button>
+                                  <Radio.Button
+                                    disabled={obj.price05 ? false : true}
+                                    onClick={(e) => handleChange(e, "0.5", id)}
+                                    value="obj.price05"
+                                  >
+                                    0.5
+                                  </Radio.Button>
+                                  <Radio.Button
+                                    disabled={obj.price07 ? false : true}
+                                    onClick={(e) => handleChange(e, "0.7", id)}
+                                    value="obj.price07"
+                                  >
+                                    0.7
+                                  </Radio.Button>
+                                </Radio.Group>
+                              </CardActions>
+                            </Card>
+                          </Grow>
+                        </Grid>
+                      ))}
+                  </Grid>
                 </div>
+              </div>
             </TabPane>
           ))}
 

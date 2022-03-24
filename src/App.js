@@ -35,9 +35,9 @@ function Routes() {
 function App() {
   return (
     <div className="App">
-    <CartProvider>
-      <Routes />
-    </CartProvider>
+      <CartProvider>
+        <Routes />
+      </CartProvider>
     </div>
   );
 }
