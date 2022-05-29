@@ -75,17 +75,7 @@ const StyledBadge = withStyles((theme) => ({
     },
 }))(Badge);
 
-function info() {
-    Modal.info({
-        title: 'Please accept cookies',
-        content: (
-            <div>
-                <p>Accept cookies to send notification</p>
-            </div>
-        ),
-        onOk() { },
-    });
-}
+
 function Waiter() {
     const { user } = useAuth();
     const [ip, socket] = useContext(IpContext)
@@ -226,8 +216,7 @@ function Waiter() {
             setOrder(data);
 
         })();
-        info()
-    }, []);
+    }, [socket,axios,setData]);
     const [confirmLoading, setConfirmLoading] = React.useState(false);
     const handleLogout = () => {
         localStorage.setItem("details", "false")
