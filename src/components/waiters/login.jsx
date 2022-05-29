@@ -61,7 +61,9 @@ function Login() {
                             Submit
                         </button>
                     </Form.Item>
+                         
                 </Form>
+                         <h1 className="text-white text-xl">Login:admin, Password:admin </h1>
                 {error ? <div className="bg-red-500 h-5 w-full"> <h1> Error incorrect login or password </h1></div> : null}
             </div>
         </Container>
