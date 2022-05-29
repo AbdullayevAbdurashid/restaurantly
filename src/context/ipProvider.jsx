@@ -3,7 +3,7 @@ import React, {
 } from "react";
 import { io } from "socket.io-client";
 
-const ip = "http://localhost:4000";
+const ip = "https://qr-restapi.vercel.app";
 const socket = io(ip);
 
 export const IpContext = createContext();
